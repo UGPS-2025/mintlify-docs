@@ -18,6 +18,7 @@
             "group": "Inicio",
             "pages": [
               "index",
+              "common-workflows",
               "ai-consumption",
               "api-reference/introduction"
             ]

@@ -1,0 +1,105 @@
+---
+title: "Flujos comunes"
+description: "Recorridos recomendados para consumir Raul API en integraciones y backoffice"
+---
+
+## Antes de empezar
+
+Usa siempre la API productiva publicada en:
+
+- **Base URL**: `https://api.raul.ugps.io`
+- **OpenAPI JSON**: `https://api.raul.ugps.io/api/openapi.json`
+
+Si un modulo expone una ruta RESTful y una legacy, prefiere la RESTful.
+
+## Flujo 1: autenticar y validar sesion
+
+Usa este flujo al iniciar una integracion o antes de operar con endpoints protegidos.
+
+1. Haz login con `POST /api/auth/login`.
+2. Guarda el `token` como Bearer JWT.
+3. Consulta `GET /api/auth/users/me` para validar identidad y permisos.
+4. Renueva sesion con `POST /api/auth/refresh` cuando expire el access token.
+
+```bash
+curl -X POST "https://api.raul.ugps.io/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "admin@ugps.cl",
+    "password": "password123"
+  }'
+```
+
+## Flujo 2: crear un cliente y registrar direccion
+
+Este flujo sirve para alta basica de cliente comercial.
+
+1. Crea el cliente con `POST /api/v1/client`.
+2. Si necesitas branding, sube logo con `POST /api/v1/client/{id}/logo`.
+3. Agrega direccion con `POST /api/v1/clients/{clientId}/addresses`.
+4. Consulta `GET /api/v1/clients/{clientId}/addresses` para verificar agrupacion por ciudad.
+
+### Recomendaciones
+
+- Usa `GET /api/v1/client/all/paginated` para backoffice o listados amplios.
+- Trata varios campos de cliente como `snake_case`.
+
+## Flujo 3: crear contacto y asociarlo al cliente
+
+Usa este flujo cuando el cliente ya existe y necesitas registrar interlocutores.
+
+1. Crea el contacto con `POST /api/v1/contact/create` o `POST /api/v1/contact/create-for-client`.
+2. Si el contacto nace separado, asocialo con `POST /api/v1/contact/associate-to-client`.
+3. Consulta roles funcionales con `GET /api/v1/contact/{contactId}/clients/{clientId}/functional-roles`.
+4. Actualiza roles con `PUT /api/v1/contact/{contactId}/clients/{clientId}/functional-roles`.
+5. Si detectas duplicados, revisa `GET /api/v1/contact/merge-preview` antes de `POST /api/v1/contact/merge`.
+
+### Recomendaciones
+
+- Usa `GET /api/v1/contact/by-client/{clientId}` para vistas por cliente.
+- Usa `GET /api/v1/contact/all/paginated` cuando el volumen sea alto.
+
+## Flujo 4: registrar un equipo GPS
+
+Este flujo cubre el alta y consulta operativa de un GPS.
+
+1. Revisa catalogos necesarios: modelos, marcas, categorias, plataformas y estados.
+2. Crea el equipo con `POST /api/v1/gps_details/create`.
+3. Consulta el detalle por `GET /api/v1/gps_details/{gps_details_id}`.
+4. Usa `GET /api/v1/gps_details/related-data/{gps_details_id}` para contexto ampliado.
+5. Si necesitas reportes o tableros, usa `GET /api/v1/gps_details/summary` y `GET /api/v1/gps_details/count`.
+
+### Recomendaciones
+
+- Para lotes grandes, prefiere `GET /api/v1/gps_details/all/cursor`.
+- Considera `/api/v1/gps/...` y `/api/v1/gps_details/...` como alias funcionales cuando existan ambos.
+
+## Flujo 5: crear y mover suscripciones
+
+Este flujo aplica cuando el GPS o servicio ya requiere plan comercial asociado.
+
+1. Consulta planes con `GET /api/v1/subscription_plan/all`.
+2. Crea la suscripcion con `POST /api/v1/subscription_details/create`.
+3. Revisa estado y resumen con `GET /api/v1/subscription_details/get/{subscription_detail_id}` y `GET /api/v1/subscription_details/summary`.
+4. Si corresponde, asigna a cliente hijo con `POST /api/v1/subscription_details/assign-to-child`.
+5. Si hay cambio de titularidad, usa `POST /api/v1/subscription_details/transfer`.
+6. Si una cancelacion fue incorrecta, evalua `POST /api/v1/subscription_details/{id}/revert-cancellation`.
+
+### Recomendaciones
+
+- Usa `GET /api/v1/subscription_details/client/{client_id}` para vistas centradas en cliente.
+- Para data masiva, prefiere endpoints paginados o cursor.
+
+## Manejo de rutas legacy
+
+Si encuentras dos endpoints con el mismo objetivo:
+
+- Prefiere rutas sin verbos como `get`, `create`, `update` o `delete`.
+- Prefiere recursos por ID con `/{id}` frente a `/get/{id}`.
+- Deja la ruta legacy solo para compatibilidad con consumidores existentes.
+
+## Enlaces relacionados
+
+- [Introduccion API](/api-reference/introduction)
+- [Guia para IA](/ai-consumption)
+- [OpenAPI JSON](https://api.raul.ugps.io/api/openapi.json)
