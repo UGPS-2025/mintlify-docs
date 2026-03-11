@@ -9,6 +9,16 @@ const outputDir = path.join(repoRoot, "generated");
 const outputPath = path.join(outputDir, "openapi.json");
 const sourceUrl =
   process.env.OPENAPI_SOURCE_URL ?? "https://api.raul.ugps.io/api/openapi.json";
+const tagDescriptions = {
+  Auth: "Autenticacion, sesiones, usuarios y recuperacion de acceso.",
+  Clients: "Clientes, contactos asociados y entidades comerciales.",
+  GPS: "Dispositivos, inventario, conectividad y catalogos de GPS.",
+  Subscriptions: "Planes, suscripciones, estados y ciclos de servicio.",
+  Visits: "Visitas tecnicas, agenda operativa y seguimiento en terreno.",
+  Billing: "Cobranza, documentos tributarios, pagos y facturacion.",
+  Catalogs: "Catalogos maestros y datos de referencia del negocio.",
+  Analytics: "Indicadores, reportes y consultas agregadas.",
+};
 
 const response = await fetch(sourceUrl, {
   headers: {
@@ -34,12 +44,13 @@ await writeFile(outputPath, `${JSON.stringify(spec, null, 2)}\n`, "utf8");
 console.log(`Generated ${path.relative(repoRoot, outputPath)} from ${sourceUrl}`);
 
 function sanitizeSpec(document) {
-  document.info ??= {
+  document.info = {
+    ...(document.info ?? {}),
     title: "Raul API",
-    version: "1.0.0",
+    version: document.info?.version || "1.0.0",
+    description:
+      "Referencia oficial de Raul API generada desde OpenAPI. Incluye autenticacion, clientes, GPS, suscripciones, visitas, billing y analytics sobre `https://api.raul.ugps.io`.",
   };
-  document.info.title ||= "Raul API";
-  document.info.version ||= "1.0.0";
 
   document.servers = [
     {
@@ -61,6 +72,8 @@ function sanitizeSpec(document) {
   if (Array.isArray(document.security)) {
     document.security = rewriteSecurity(document.security);
   }
+
+  normalizeTags(document);
 
   for (const [routePath, pathItem] of Object.entries(document.paths ?? {})) {
     const expectedPathParams = extractPathParams(routePath);
@@ -89,6 +102,34 @@ function sanitizeSpec(document) {
       }
     }
   });
+}
+
+function normalizeTags(document) {
+  if (!Array.isArray(document.tags)) {
+    return;
+  }
+
+  document.tags = document.tags
+    .map((tag) => ({
+      ...tag,
+      description: tag.description || tagDescriptions[tag.name] || `${tag.name} endpoints.`,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  document["x-tagGroups"] = [
+    {
+      name: "Access",
+      tags: ["Auth"],
+    },
+    {
+      name: "Operations",
+      tags: ["Clients", "GPS", "Subscriptions", "Visits"],
+    },
+    {
+      name: "Finance and Insights",
+      tags: ["Billing", "Catalogs", "Analytics"],
+    },
+  ].filter((group) => group.tags.some((tagName) => document.tags.some((tag) => tag.name === tagName)));
 }
 
 function normalizeSecurity(operation) {

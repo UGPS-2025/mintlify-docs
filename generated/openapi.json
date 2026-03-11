@@ -28825,14 +28825,26 @@
   },
   "info": {
     "title": "Raul API",
-    "description": "\n## Raul API\n\nDocumentacion OpenAPI consumida por Mintlify para la API productiva de Raul.\n\n### URLs publicas\n- **Base URL**: https://api.raul.ugps.io\n- **Mintlify Docs**: https://docs.raul.ugps.io\n- **OpenAPI JSON**: https://api.raul.ugps.io/api/openapi.json\n\n### Autenticacion\n- Los endpoints protegidos usan Bearer con JWT.\n- Revisa security y los esquemas de request/response por operacion.\n\n### Nota para integraciones e IA\n- Esta especificacion es la fuente de verdad para endpoints, parametros, payloads y respuestas.\n- Si una operacion tiene summary pero no description, interpreta el contrato desde path, tags, DTOs y responses tipados.\n    ",
+    "description": "Referencia oficial de Raul API generada desde OpenAPI. Incluye autenticacion, clientes, GPS, suscripciones, visitas, billing y analytics sobre `https://api.raul.ugps.io`.",
     "version": "2.0.0",
     "contact": {}
   },
   "tags": [
     {
+      "name": "Analytics",
+      "description": "Analítica y reportes"
+    },
+    {
       "name": "Auth",
       "description": "Autenticacion y gestion de usuarios"
+    },
+    {
+      "name": "Billing",
+      "description": "Facturación"
+    },
+    {
+      "name": "Catalogs",
+      "description": "Catálogos IMEI y Chip"
     },
     {
       "name": "Clients",
@@ -28849,18 +28861,6 @@
     {
       "name": "Visits",
       "description": "Visitas técnicas"
-    },
-    {
-      "name": "Billing",
-      "description": "Facturación"
-    },
-    {
-      "name": "Catalogs",
-      "description": "Catálogos IMEI y Chip"
-    },
-    {
-      "name": "Analytics",
-      "description": "Analítica y reportes"
     }
   ],
   "servers": [
@@ -41964,5 +41964,30 @@
         ]
       }
     }
-  }
+  },
+  "x-tagGroups": [
+    {
+      "name": "Access",
+      "tags": [
+        "Auth"
+      ]
+    },
+    {
+      "name": "Operations",
+      "tags": [
+        "Clients",
+        "GPS",
+        "Subscriptions",
+        "Visits"
+      ]
+    },
+    {
+      "name": "Finance and Insights",
+      "tags": [
+        "Billing",
+        "Catalogs",
+        "Analytics"
+      ]
+    }
+  ]
 }

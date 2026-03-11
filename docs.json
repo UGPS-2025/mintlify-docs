@@ -26,10 +26,7 @@
       },
       {
         "tab": "API",
-        "openapi": "generated/openapi.json",
-        "pages": [
-          "api-reference/introduction"
-        ]
+        "openapi": "generated/openapi.json"
       }
     ],
     "global": {
