@@ -1,0 +1,12 @@
+{
+  "name": "mintlify-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "openapi:generate": "node scripts/generate-openapi.mjs",
+    "docs:validate": "npx mint validate",
+    "docs:broken-links": "npx mint broken-links",
+    "docs:dev": "npx mint dev",
+    "docs:dev:lts": "npx -y -p node@20 -p mint mint dev"
+  }
+}

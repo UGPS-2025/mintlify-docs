@@ -26,16 +26,30 @@ See the [AI tools guides](/ai-tools) for tool-specific setup.
 
 ## Development
 
+Use Node LTS for Mintlify CLI compatibility. This repo includes `.nvmrc` and currently expects Node 20.
+
 Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
 
 ```
 npm i -g mint
 ```
 
+Generate the local OpenAPI artifact before opening the docs:
+
+```
+npm run openapi:generate
+```
+
 Run the following command at the root of your documentation, where your `docs.json` is located:
 
 ```
 mint dev
+```
+
+If you are on a non-LTS Node version and just want a working local preview, use:
+
+```
+npm run docs:dev:lts
 ```
 
 View your local preview at `http://localhost:3000`.
@@ -48,8 +62,10 @@ Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/sett
 
 ### Troubleshooting
 
+- If `mint dev` says Node 25+ is unsupported: switch to Node LTS first, for example `nvm use`, or run `npm run docs:dev:lts`.
 - If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
 - If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+- If API reference generation fails: regenerate `generated/openapi.json` with `npm run openapi:generate`.
 
 ### Resources
 - [Mintlify documentation](https://mintlify.com/docs)
