@@ -1,23 +1,40 @@
 ---
-title: 'Introducción'
-description: 'Documentación oficial de la API UGPS'
+title: 'Introduccion'
+description: 'Documentacion oficial de la API de Raul'
 ---
 
 ## Endpoint base
 
-Tu API disponible para pruebas y consumo está en:
+La API productiva disponible para consumo esta en:
 
 - **Base URL**: `https://api.raul.ugps.io`
 - **Health check**: `https://api.raul.ugps.io/api/health`
-- **Esquema OpenAPI**: `https://api.raul.ugps.io/api/openapi.json`
+- **OpenAPI JSON**: `https://api.raul.ugps.io/api/openapi.json`
 
-La pestaña de **API** renderiza automáticamente los endpoints definidos en el
-esquema OpenAPI.
+## Autenticacion
+
+Los endpoints protegidos usan autenticacion `Bearer` con token JWT. La
+referencia de API indica que operaciones requieren autenticacion y los esquemas
+de request y response asociados.
+
+## Fuente de referencia
+
+La pestaña de **API** renderiza automaticamente los endpoints definidos en el
+esquema OpenAPI expuesto por el backend. Este documento no replica manualmente
+los contratos; consume la definicion publicada por la API.
 
 <Card
   title="Abrir JSON OpenAPI"
   icon="file-json"
   href="https://api.raul.ugps.io/api/openapi.json"
 >
-  Ver definición de endpoints
+  Ver definicion completa de endpoints y esquemas
+</Card>
+
+<Card
+  title="Ver health check"
+  icon="heartbeat"
+  href="https://api.raul.ugps.io/api/health"
+>
+  Confirmar disponibilidad operativa del backend
 </Card>

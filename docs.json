@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "UGPS API",
+  "name": "Raul API",
   "colors": {
     "primary": "#0F766E",
     "light": "#14B8A6",
@@ -38,9 +38,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentación UGPS",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "API Health",
+          "href": "https://api.raul.ugps.io/api/health",
+          "icon": "heartbeat"
         }
       ]
     }
@@ -54,6 +54,10 @@
       {
         "label": "Health check",
         "href": "https://api.raul.ugps.io/api/health"
+      },
+      {
+        "label": "Base URL",
+        "href": "https://api.raul.ugps.io"
       }
     ],
     "primary": {

@@ -1,97 +1,61 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Raul API"
+description: "Documentacion tecnica y referencia OpenAPI para la API de Raul"
 ---
 
-## Setting up
+## Resumen
 
-Get your documentation site up and running in minutes.
+Esta documentacion publica expone la API de Raul a partir del esquema OpenAPI
+servido por el backend productivo.
 
 <Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
+  title="Referencia API"
+  icon="terminal"
+  href="/api-reference/introduction"
   horizontal
 >
-  Follow our three step quickstart guide.
+  Explora endpoints, esquemas y autenticacion desde la referencia generada.
 </Card>
 
-## Make it yours
+## Endpoints clave
 
-Design a docs site that looks great and empowers your users.
+- **Base URL**: `https://api.raul.ugps.io`
+- **Health check**: `https://api.raul.ugps.io/api/health`
+- **OpenAPI JSON**: `https://api.raul.ugps.io/api/openapi.json`
 
 <Columns cols={2}>
   <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
+    title="Health check"
+    icon="heartbeat"
+    href="https://api.raul.ugps.io/api/health"
   >
-    Edit your docs locally and preview them in real time.
+    Verifica disponibilidad del backend productivo.
   </Card>
   <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
+    title="OpenAPI JSON"
+    icon="file-json"
+    href="https://api.raul.ugps.io/api/openapi.json"
   >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+    Fuente de verdad para la referencia tecnica de esta documentacion.
   </Card>
   <Card
-    title="API documentation"
-    icon="terminal"
+    title="Introduccion API"
+    icon="book-open-cover"
     href="/api-reference/introduction"
   >
-    Auto-generate API documentation from OpenAPI specifications.
+    Resumen de autenticacion, consumo y enlaces operativos.
+  </Card>
+  <Card
+    title="Swagger reemplazado"
+    icon="arrows-rotate"
+  >
+    `/api/docs` redirige a Mintlify y usa el esquema OpenAPI remoto.
   </Card>
 </Columns>
 
-## Create beautiful pages
+## Notas de uso
 
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+- La referencia de endpoints se genera desde OpenAPI, no desde paginas MDX manuales.
+- Si el backend agrega o cambia endpoints, la documentacion se actualiza desde
+  `https://api.raul.ugps.io/api/openapi.json`.
+- `api.ugps.io` queda fuera de esta documentacion.
