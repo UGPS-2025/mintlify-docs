@@ -23,6 +23,13 @@ La pestaña de **API** renderiza automaticamente los endpoints definidos en el
 esquema OpenAPI expuesto por el backend. Este documento no replica manualmente
 los contratos; consume la definicion publicada por la API.
 
+## Rutas recomendadas
+
+- Prefiere rutas RESTful cuando exista una alternativa legacy equivalente.
+- En modulos con gran volumen de datos, prefiere endpoints paginados o cursor-based.
+- Usa esta documentacion junto con la guia de consumo para IA cuando el cliente
+  sea un agente o automatizacion.
+
 <Card
   title="Abrir JSON OpenAPI"
   icon="file-json"
@@ -37,4 +44,12 @@ los contratos; consume la definicion publicada por la API.
   href="https://api.raul.ugps.io/api/health"
 >
   Confirmar disponibilidad operativa del backend
+</Card>
+
+<Card
+  title="Guia para IA"
+  icon="sparkles"
+  href="/ai-consumption"
+>
+  Criterios para agentes, automatizaciones y consumo programatico
 </Card>

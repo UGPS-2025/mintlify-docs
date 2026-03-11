@@ -18,6 +18,7 @@
             "group": "Inicio",
             "pages": [
               "index",
+              "ai-consumption",
               "api-reference/introduction"
             ]
           }
@@ -51,14 +52,18 @@
   },
   "navbar": {
     "links": [
-      {
-        "label": "Health check",
-        "href": "https://api.raul.ugps.io/api/health"
-      },
-      {
-        "label": "Base URL",
-        "href": "https://api.raul.ugps.io"
-      }
+        {
+          "label": "Health check",
+          "href": "https://api.raul.ugps.io/api/health"
+        },
+        {
+          "label": "Guia IA",
+          "href": "/ai-consumption"
+        },
+        {
+          "label": "Base URL",
+          "href": "https://api.raul.ugps.io"
+        }
     ],
     "primary": {
       "type": "button",

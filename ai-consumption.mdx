@@ -1,0 +1,86 @@
+---
+title: "Para IA"
+description: "Guia de consumo de Raul API para agentes, asistentes y automatizaciones"
+---
+
+## Fuente de verdad
+
+Si eres una IA o un integrador automatico, usa estas fuentes en este orden:
+
+1. `https://api.raul.ugps.io/api/openapi.json`
+2. La pestaña **API** generada por Mintlify
+3. Esta guia para criterios de uso y preferencias operativas
+
+## Reglas de consumo
+
+- Prefiere siempre rutas RESTful cuando exista una alternativa equivalente.
+- Si encuentras una ruta marcada como `legacy`, usala solo por compatibilidad.
+- Interpreta autenticacion desde `security`, DTOs y respuestas tipadas.
+- No asumas que `api.ugps.io` y `api.raul.ugps.io` son equivalentes.
+- La base operativa correcta para esta documentacion es `https://api.raul.ugps.io`.
+
+## Flujo minimo de autenticacion
+
+1. `POST /api/auth/login`
+2. Guardar `token` como Bearer JWT
+3. Renovar con `POST /api/auth/refresh` cuando expire el access token
+4. Cerrar sesion con `POST /api/auth/logout` si necesitas invalidar refresh tokens
+
+```bash
+curl -X POST "https://api.raul.ugps.io/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "admin@ugps.cl",
+    "password": "password123"
+  }'
+```
+
+## Preferencias por modulo
+
+### Auth
+
+- Usa `username` como email en login.
+- No infieras usuarios desde tokens vencidos; renueva con `refresh`.
+
+### Clients
+
+- Muchas respuestas de clientes usan `snake_case` por compatibilidad con frontend legacy.
+- Para filtros amplios o listados grandes, prefiere endpoints paginados.
+
+### GPS
+
+- Si necesitas listar grandes volumenes, prefiere cursor pagination sobre offset pagination.
+- Si una ruta existe como `get/:id` y como `:id`, prefiere la RESTful.
+
+### Billing
+
+- Interpreta las transiciones de estado de factura desde summaries y descriptions del OpenAPI.
+- No asumas que una factura puede pasar a cualquier estado arbitrariamente.
+
+### Omnichannel
+
+- Los threads pueden requerir validacion de acceso antes de devolver mensajes.
+- Diferencia entre envio de email nuevo, reply a thread y envio por shared mailbox.
+
+## Rutas legacy y duplicadas
+
+Algunos modulos mantienen rutas legacy por compatibilidad. Cuando encuentres dos rutas con el mismo objetivo:
+
+- Prefiere la que diga `RESTful`
+- Prefiere la que no incluya verbos en el path (`get`, `create`, `update`, `delete`)
+- Usa la legacy solo si el consumidor actual depende de ella
+
+## Criterio de interpretacion
+
+Si una operacion tiene descripcion breve:
+
+- usa `summary` para intencion
+- usa `description` para restricciones y preferencia de uso
+- usa request/response DTOs para forma exacta de datos
+- usa `ApiResponse` y codigos HTTP para manejo de errores
+
+## Enlaces utiles
+
+- [Introduccion API](/api-reference/introduction)
+- [OpenAPI JSON](https://api.raul.ugps.io/api/openapi.json)
+- [Health check](https://api.raul.ugps.io/api/health)
