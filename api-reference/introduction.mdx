@@ -23,10 +23,27 @@ La pestaña de **API** renderiza automaticamente los endpoints definidos en el
 esquema OpenAPI expuesto por el backend. Este documento no replica manualmente
 los contratos; consume la definicion publicada por la API.
 
+## Modulos disponibles
+
+| Modulo | Descripcion |
+|--------|-------------|
+| **Auth** | Login, refresh, logout, gestion de usuarios, avatar, password reset |
+| **Clients** | CRUD de clientes, paginacion, logo |
+| **Client Father** | Clientes padre con suscripciones |
+| **Client Addresses** | Direcciones agrupadas por ciudad |
+| **Contact** | Contactos, leads, functional roles, merge, fotos |
+| **Vehicle / Asset** | Vehiculos, filtros, tipos de vehiculo |
+| **Activities** | Timeline por cliente/contacto/visita, archivos, tipos |
+| **GPS Details** | Equipos GPS con paginacion offset/cursor, IMEI, resumen |
+| **GPS Catalogos** | Modelos, plataformas, inventario, marcas, categorias, estados, historial |
+| **Subscriptions** | Suscripciones, planes, estados, monedas, transferencias |
+| **Catalogos** | Rubro, ciudad, tipo de contrato, cargo, comunicacion, lifecycle |
+
 ## Rutas recomendadas
 
 - Prefiere rutas RESTful cuando exista una alternativa legacy equivalente.
 - En modulos con gran volumen de datos, prefiere endpoints paginados o cursor-based.
+- Algunos endpoints tienen alias (ej: `/gps_details/...` y `/gps/...`); ambos son equivalentes.
 - Usa esta documentacion junto con la guia de consumo para IA cuando el cliente
   sea un agente o automatizacion.
 

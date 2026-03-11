@@ -41,26 +41,85 @@ curl -X POST "https://api.raul.ugps.io/api/auth/login" \
 
 - Usa `username` como email en login.
 - No infieras usuarios desde tokens vencidos; renueva con `refresh`.
+- Soporta gestion de usuarios, toggle de estado activo, avatar y reset de password.
 
 ### Clients
 
 - Muchas respuestas de clientes usan `snake_case` por compatibilidad con frontend legacy.
-- Para filtros amplios o listados grandes, prefiere endpoints paginados.
+- Para filtros amplios o listados grandes, prefiere endpoints paginados (`/all/paginated`).
+- Soporta upload de logo por cliente.
 
-### GPS
+### Client Father
 
-- Si necesitas listar grandes volumenes, prefiere cursor pagination sobre offset pagination.
-- Si una ruta existe como `get/:id` y como `:id`, prefiere la RESTful.
+- Representa clientes padre que agrupan clientes hijos.
+- Disponible con paginacion y con vista de suscripciones asociadas.
 
-### Billing
+### Client Addresses
 
-- Interpreta las transiciones de estado de factura desde summaries y descriptions del OpenAPI.
-- No asumas que una factura puede pasar a cualquier estado arbitrariamente.
+- Las direcciones se agrupan por ciudad al consultarlas.
+- CRUD disponible bajo `/clients/{clientId}/addresses` y `/client-addresses/{id}`.
 
-### Omnichannel
+### Contact
 
-- Los threads pueden requerir validacion de acceso antes de devolver mensajes.
-- Diferencia entre envio de email nuevo, reply a thread y envio por shared mailbox.
+- Soporta paginacion, agrupacion por empresa, leads y busqueda por cliente.
+- Permite merge de contactos duplicados (preview + merge).
+- Functional roles se asignan por relacion contacto-cliente.
+- Soporta upload y borrado de foto de contacto.
+
+### Vehicle / Asset
+
+- `/vehicle` y `/asset` son alias equivalentes para algunos endpoints.
+- Soporta filtros y listado de nombres.
+- Incluye catalogo de tipos de vehiculo (`/type_vehicle/all`).
+
+### Activities
+
+- Timeline de actividades por cliente, contacto o visita.
+- Soporta archivos adjuntos (upload y download).
+- Tipos de actividad son configurables via CRUD.
+
+### GPS Details
+
+- Modulo principal de equipos GPS.
+- Muchos endpoints tienen alias: `/gps_details/...` y `/gps/...` son equivalentes.
+- Si necesitas listar grandes volumenes, prefiere cursor pagination (`/all/cursor`) sobre offset pagination.
+- Si una ruta existe como `get/:id` y como `/:id`, prefiere la RESTful.
+- Incluye conteo (`/count`), resumen (`/summary`) y datos relacionados (`/related-data`).
+
+### GPS (sub-modulos)
+
+- **GPS Models**: CRUD de modelos, soporta upload de ficha tecnica PDF.
+- **GPS Platforms**: CRUD de plataformas GPS.
+- **GPS Inventory**: Estados de inventario, incluye vista para visitas (`/get_x_visit`).
+- **GPS Brands**: CRUD de marcas GPS.
+- **GPS Categories**: CRUD de categorias GPS.
+- **GPS Status**: Solo lectura, lista todos los estados.
+- **GPS History**: Historial de un equipo GPS por ID.
+
+### Subscription Details
+
+- CRUD de suscripciones con paginacion offset y cursor.
+- Soporta resumen (`/summary`), razones de cancelacion, y reversion de cancelacion.
+- Permite asignar suscripcion a cliente hijo y transferir entre clientes.
+- Consulta por cliente con `/client/{client_id}`.
+
+### Subscription Plan
+
+- CRUD de planes de suscripcion.
+
+### Subscription Status / Currency
+
+- Status: solo lectura, lista todos los estados de suscripcion.
+- Currency: CRUD completo de monedas.
+
+### Catalogos auxiliares
+
+- **Rubro**: Sectores de negocio (solo lectura).
+- **City**: Ciudades con provincia y region (solo lectura).
+- **Type of Contract**: CRUD de tipos de contrato.
+- **Cargo / RoleContact**: CRUD de cargos y tipos de contacto.
+- **Communication**: CRUD de tipos de comunicacion.
+- **PlataformClient**: Actualizacion de IDs de cliente temporales.
 
 ## Rutas legacy y duplicadas
 
