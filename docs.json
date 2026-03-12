@@ -14,7 +14,7 @@
         "tab": "Guía",
         "groups": [
           {
-            "group": "Inicio",
+            "group": "Fundamentos",
             "pages": [
               "index",
               "modules-overview",
@@ -22,15 +22,61 @@
               "api-conventions",
               "error-handling",
               "common-workflows",
-              "ai-consumption",
-              "omnichannel-guide",
-              "sales-guide",
-              "clients-guide",
-              "contacts-guide",
-              "gps-guide",
-              "subscriptions-guide",
               "changelog",
               "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Dashboard",
+            "pages": [
+              "dashboard-guide"
+            ]
+          },
+          {
+            "group": "Clientes",
+            "pages": [
+              "clients-guide",
+              "contacts-guide"
+            ]
+          },
+          {
+            "group": "Operaciones",
+            "pages": [
+              "operations-guide",
+              "gps-guide",
+              "subscriptions-guide"
+            ]
+          },
+          {
+            "group": "Comunicaciones",
+            "pages": [
+              "communications-guide",
+              "omnichannel-guide",
+              "ai-consumption"
+            ]
+          },
+          {
+            "group": "Ventas",
+            "pages": [
+              "sales-guide"
+            ]
+          },
+          {
+            "group": "Finanzas",
+            "pages": [
+              "finance-guide"
+            ]
+          },
+          {
+            "group": "Diagnostico",
+            "pages": [
+              "diagnostics-guide"
+            ]
+          },
+          {
+            "group": "Configuraciones",
+            "pages": [
+              "settings-guide"
             ]
           }
         ]

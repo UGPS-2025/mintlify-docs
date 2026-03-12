@@ -1,0 +1,66 @@
+---
+title: "Finanzas"
+description: "Facturacion, boletas, cuentas por pagar, metodos de pago y ejecuciones financieras"
+---
+
+## Alcance
+
+El menu **Finanzas** agrupa billing y operaciones financieras administrativas.
+
+Incluye:
+
+- facturas
+- boletas
+- ejecucion de facturacion
+- cuentas por pagar
+- pagos de gastos
+- cuentas bancarias
+- tarjetas y creditos
+
+## Submenus principales
+
+- Facturas
+- Boletas
+- Ejecucion de facturacion
+- Cuentas por pagar
+- Cuentas bancarias
+- Metodos de pago
+- Tarjetas y creditos
+
+## Billing
+
+Endpoints relevantes:
+
+- `GET /api/v1/factura/sum`
+- `GET /api/v1/factura/client/{clientId}`
+- `GET /api/v1/factura/period`
+- `DELETE /api/v1/factura/{id}`
+- `GET /api/v1/boleta`
+- `POST /api/v1/boleta`
+- `PUT /api/v1/boleta/{id}/status`
+
+## Ejecucion de facturacion
+
+Endpoints relevantes:
+
+- `POST /api/billing/ejecucion`
+- `GET /api/billing/ejecucion/recent`
+- `GET /api/billing/ejecucion/{id}`
+- `GET /api/billing/ejecucion/{id}/error-summary`
+- `PUT /api/billing/ejecucion/errors/{errorId}/status`
+
+## Cuentas por pagar
+
+Endpoints relevantes:
+
+- gastos y pagos de gastos
+- cuentas bancarias
+- metodos de pago
+- tarjetas de credito
+- creditos pendientes
+
+## Recomendaciones
+
+- trata billing operativo y cuentas por pagar como dominios distintos
+- usa ejecuciones para procesos batch
+- usa boletas/facturas para documento individual

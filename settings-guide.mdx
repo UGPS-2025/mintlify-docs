@@ -1,0 +1,57 @@
+---
+title: "Configuraciones"
+description: "Catalogos, tipos, plantillas y parametros base que alimentan el resto del sistema"
+---
+
+## Alcance
+
+El menu **Configuraciones** agrupa datos maestros y parametros del sistema.
+
+Incluye frecuentemente:
+
+- rubro
+- ciudad
+- tipo de contrato
+- cargo
+- comunicacion
+- client lifecycle
+- plantillas o configuracion de billing
+- catalogos tecnicos
+
+## Submenus principales
+
+- Rubro
+- Ciudad
+- Tipo de contrato
+- Cargo
+- Comunicacion
+- Client lifecycle
+- Billing settings
+- Catalogos tecnicos
+
+## Endpoints relevantes
+
+- `GET /api/v1/rubro/all`
+- `GET /api/v1/city/all`
+- `GET /api/v1/type_of_contract/all`
+- `POST /api/v1/type_of_contract/create`
+- `GET /api/v1/cargo/all`
+- `POST /api/v1/cargo/create`
+- `GET /api/v1/communication/all`
+- `POST /api/v1/communication/create`
+- `GET /api/v1/client_lifecycle/all`
+- `POST /api/v1/client_lifecycle/create`
+- `GET /api/v1/billing/config/invoice-template`
+- `PUT /api/v1/billing/config/invoice-template`
+
+## Cuando usarlo
+
+- antes de crear entidades de negocio
+- cuando debas mantener formularios y selectores
+- cuando necesites ajustar templates o parametros base
+
+## Recomendaciones
+
+- no mezcles catalogos con transacciones
+- documenta internamente cualquier cambio de catalogo que afecte flujos productivos
+- revisa dependencias antes de eliminar parametros maestros

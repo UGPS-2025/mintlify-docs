@@ -1,0 +1,84 @@
+---
+title: "Operaciones"
+description: "Modulo operativo: suscripciones, GPS, visitas, actividades, soporte y ejecucion tecnica"
+---
+
+## Alcance
+
+En el producto, **Operaciones** agrupa la ejecucion diaria del servicio.
+
+Incluye principalmente:
+
+- suscripciones
+- GPS y dispositivos
+- visitas
+- actividades
+- soporte o tickets
+- movimientos tecnicos asociados
+
+## Submenus principales
+
+- Suscripciones
+- GPS
+- Catalogos GPS
+- Actividades
+- Visitas
+- Tecnicos y soporte
+- SIMs y conectividad
+
+## Suscripciones
+
+Endpoints clave:
+
+- `GET /api/v1/subscription_details/all/paginated`
+- `GET /api/v1/subscription_details/all/cursor`
+- `GET /api/v1/subscription_details/get/{subscription_detail_id}`
+- `GET /api/v1/subscription_details/summary`
+- `POST /api/v1/subscription_details/create`
+- `POST /api/v1/subscription_details/transfer`
+
+## GPS y dispositivos
+
+Endpoints clave:
+
+- `GET /api/v1/gps_details/all/paginated`
+- `GET /api/v1/gps_details/all/cursor`
+- `GET /api/v1/gps_details/{gps_details_id}`
+- `POST /api/v1/gps_details/create`
+- `GET /api/v1/gps_details/related-data/{gps_details_id}`
+- `GET /api/v1/gps_details/summary`
+
+## Actividades
+
+Endpoints clave:
+
+- `POST /api/v1/activity/create`
+- `PUT /api/v1/activity/{activityId}`
+- `GET /api/v1/activity/by-client/{clientId}`
+- `GET /api/v1/activity/by-contact/{contactId}`
+- `GET /api/v1/activity/by-visit/{visitId}`
+
+## Visitas
+
+Este dominio vive en el backend aunque no toda su explicacion editorial estaba publicada.
+
+Usalo para:
+
+- agenda tecnica
+- ejecucion de visitas
+- relacion entre actividad, tecnico, GPS y cliente
+
+## SIMs y conectividad
+
+Parte del backend operativo tambien expone:
+
+- SIM management
+- connectivity
+- endpoint stats
+- catalogo de chips
+
+## Recomendaciones
+
+- Usa paginacion o cursor en listados grandes.
+- Separa estado comercial de estado operativo.
+- Para trazabilidad temporal usa Activities y Visits, no solo Subscription Details.

@@ -1,0 +1,50 @@
+---
+title: "Dashboard"
+description: "Que agrupa el dashboard y que endpoints alimentan resumenes, contadores y vistas ejecutivas"
+---
+
+## Objetivo
+
+El dashboard concentra vistas ejecutivas y operativas de alto nivel.
+
+No suele ser un modulo transaccional. Normalmente consume:
+
+- conteos
+- resumenes
+- graficos
+- indicadores agregados
+- health checks
+
+## Submenus o widgets habituales
+
+- resumen comercial
+- resumen operativo
+- cards de conteo
+- graficos
+- alertas
+
+## Endpoints relevantes
+
+Ejemplos frecuentes:
+
+- `GET /api`
+- `GET /api/v1/gps_details/count`
+- `GET /api/v1/gps_details/summary`
+- `GET /api/v1/subscription_details/summary`
+- `GET /api/v1/analytics/income-statement`
+- `GET /api/analytics/graphics/ingresos-por-mes`
+
+## Cuando usarlo
+
+Usa estas vistas cuando necesites:
+
+- resumen comercial
+- resumen operativo
+- tableros ejecutivos
+- validacion rapida de salud del sistema
+
+## Recomendaciones
+
+- No uses endpoints de dashboard para reemplazar detalle transaccional.
+- Para drill-down, navega al modulo funcional correspondiente.
+- Si una tarjeta muestra conteo, busca el endpoint de `summary`, `count` o `stats`.

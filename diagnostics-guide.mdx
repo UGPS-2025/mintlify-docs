@@ -1,0 +1,52 @@
+---
+title: "Diagnostico"
+description: "Health checks, conectividad, SIMs, webhooks y estado tecnico del sistema"
+---
+
+## Alcance
+
+El menu **Diagnostico** agrupa salud del sistema y diagnostico tecnico.
+
+Incluye:
+
+- health checks
+- webhooks fallidos
+- conectividad
+- SIM management
+- estado de tokens o canales
+- consumo y cache
+
+## Submenus principales
+
+- Health
+- Conectividad
+- SIMs
+- Webhooks
+- Estado de canales
+- Consumo y cache
+
+## Endpoints relevantes
+
+- `GET /api/health`
+- `GET /api/v1/consumption/health`
+- `GET /api/v1/consumption/cache-status`
+- `GET /api/v1/emnify/connectivity/{imei}`
+- `POST /api/v1/sim/status`
+- `POST /api/v1/sim/status/bulk`
+- `GET /api/omnichannel/auth/health/tokens`
+- `GET /api/omnichannel/auth/whatsapp/status`
+- `GET /api/omnichannel/failed-webhooks`
+- `POST /api/omnichannel/failed-webhooks/{id}/retry`
+
+## Cuando usarlo
+
+- incidentes productivos
+- revision de sincronizacion
+- troubleshooting de conectividad
+- validacion de canales externos
+
+## Recomendaciones
+
+- usa esta seccion para diagnostico, no para operacion normal
+- si el problema es de inbox, revisa tambien Comunicaciones
+- si el problema es de GPS/SIM, cruza con Operaciones
