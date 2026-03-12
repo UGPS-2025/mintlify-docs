@@ -17,6 +17,7 @@
             "group": "Inicio",
             "pages": [
               "index",
+              "modules-overview",
               "authentication",
               "api-conventions",
               "error-handling",

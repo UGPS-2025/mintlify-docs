@@ -1,0 +1,177 @@
+---
+title: "Modulos de la API"
+description: "Que hace cada modulo principal de Raul API y cuando usarlo"
+---
+
+## Resumen
+
+Raul API esta organizada por modulos funcionales. Esta pagina explica el objetivo de cada uno y cuando conviene usarlo.
+
+## Auth
+
+Gestiona autenticacion y acceso.
+
+Usalo para:
+
+- iniciar sesion
+- renovar tokens
+- cerrar sesion
+- consultar usuario actual
+- administrar usuarios, avatar y password reset
+
+## Clients
+
+Gestiona clientes comerciales.
+
+Usalo para:
+
+- crear clientes
+- listarlos y filtrarlos
+- actualizarlos o eliminarlos
+- subir logo
+
+## Client Father
+
+Representa clientes padre o empresas matriz.
+
+Usalo para:
+
+- agrupar clientes hijos
+- consultar estructuras comerciales grandes
+- revisar contexto agregado de suscripciones por grupo
+
+## Client Addresses
+
+Gestiona direcciones asociadas a clientes.
+
+Usalo para:
+
+- registrar direccion principal o secundaria
+- consultar direcciones por cliente
+- actualizar o eliminar direcciones
+
+## Contact
+
+Gestiona personas de contacto y relacion con clientes.
+
+Usalo para:
+
+- crear contactos
+- asociarlos a empresas
+- consultar leads
+- definir roles funcionales
+- resolver duplicados con merge
+
+## Vehicle / Asset
+
+Gestiona vehiculos o activos vinculados al negocio.
+
+Usalo para:
+
+- crear y consultar vehiculos
+- filtrar listados
+- navegar catalogos de tipo de vehiculo
+
+## Activities
+
+Gestiona timeline operativo y trazabilidad comercial o tecnica.
+
+Usalo para:
+
+- registrar actividades
+- consultarlas por cliente, contacto o visita
+- adjuntar archivos
+- administrar tipos de actividad
+
+## GPS Details
+
+Es el modulo principal de dispositivos GPS.
+
+Usalo para:
+
+- registrar equipos
+- consultar detalle tecnico y operativo
+- listar grandes volumenes
+- obtener resumenes, conteos y datos relacionados
+
+## GPS Catalogos
+
+Agrupa catalogos auxiliares de GPS.
+
+Incluye:
+
+- modelos
+- plataformas
+- inventario
+- marcas
+- categorias
+- estados
+- historial
+
+Usalo antes de crear o actualizar equipos GPS.
+
+## Subscriptions
+
+Gestiona planes y suscripciones comerciales.
+
+Usalo para:
+
+- crear suscripciones
+- consultar estado por cliente o por ID
+- transferir entre clientes
+- revertir cancelaciones
+- consultar planes, monedas y estados
+
+## Visits
+
+Agrupa visitas tecnicas y seguimiento en terreno.
+
+Usalo cuando el proceso involucre:
+
+- agenda tecnica
+- ejecucion de visita
+- relacion entre visita, actividad y GPS
+
+## Billing
+
+Gestiona cobros y documentos asociados.
+
+Usalo para:
+
+- facturacion
+- pagos
+- DTE y documentos tributarios
+- operaciones financieras derivadas del servicio
+
+## Catalogs
+
+Agrupa datos maestros del negocio.
+
+Incluye:
+
+- rubro
+- ciudad
+- tipo de contrato
+- cargo
+- comunicacion
+- lifecycle
+
+Usalo como soporte de formularios y validaciones.
+
+## Analytics
+
+Entrega vistas agregadas e indicadores.
+
+Usalo para:
+
+- dashboards
+- reportes
+- consultas consolidadas
+
+No lo uses como reemplazo de endpoints transaccionales de detalle.
+
+## Recomendacion de uso
+
+- Si necesitas contrato exacto, usa la pestaña **API**.
+- Si necesitas entender que modulo elegir, empieza por esta pagina.
+- Si necesitas integrar un flujo completo, usa [Flujos comunes](/common-workflows).
