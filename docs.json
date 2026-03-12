@@ -18,11 +18,13 @@
             "pages": [
               "index",
               "modules-overview",
+              "models-overview",
               "authentication",
               "api-conventions",
               "error-handling",
               "common-workflows",
               "changelog",
+              "api-reference/index",
               "api-reference/introduction"
             ]
           },
@@ -83,7 +85,40 @@
       },
       {
         "tab": "API",
-        "openapi": "generated/openapi.json"
+        "groups": [
+          {
+            "group": "Acceso",
+            "openapi": "generated/specs/auth.json"
+          },
+          {
+            "group": "Clientes",
+            "openapi": "generated/specs/clients.json"
+          },
+          {
+            "group": "Operaciones",
+            "openapi": "generated/specs/operations.json"
+          },
+          {
+            "group": "Comunicaciones",
+            "openapi": "generated/specs/communications.json"
+          },
+          {
+            "group": "Ventas",
+            "openapi": "generated/specs/sales.json"
+          },
+          {
+            "group": "Finanzas",
+            "openapi": "generated/specs/finance.json"
+          },
+          {
+            "group": "Diagnostico",
+            "openapi": "generated/specs/diagnostics.json"
+          },
+          {
+            "group": "Configuraciones",
+            "openapi": "generated/specs/settings.json"
+          }
+        ]
       }
     ],
     "global": {

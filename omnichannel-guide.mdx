@@ -1,0 +1,197 @@
+---
+title: "Inbox y Omnichannel"
+description: "Endpoints clave para inbox unificado, bandejas compartidas, WhatsApp, sync de email y tags"
+---
+
+## Alcance
+
+Este dominio cubre atencion multicanal sobre email y WhatsApp.
+
+Incluye:
+
+- inbox unificado
+- threads y mensajes
+- asignacion y lectura
+- envio y reply
+- bandejas compartidas
+- sincronizacion de email
+- spam management
+- tags operativas
+
+## Omnichannel
+
+Endpoints principales:
+
+- `GET /api/omnichannel/inbox`
+- `GET /api/omnichannel/threads/{threadId}`
+- `GET /api/omnichannel/messages/{activityId}`
+- `PATCH /api/omnichannel/messages/{activityId}/read`
+- `PATCH /api/omnichannel/threads/{threadId}/read`
+- `POST /api/omnichannel/threads/{threadId}/close`
+- `POST /api/omnichannel/threads/{threadId}/reopen`
+- `GET /api/omnichannel/stats`
+
+Usalo para:
+
+- listar conversaciones
+- consultar detalle de un thread
+- marcar mensajes o threads como leidos
+- cerrar y reabrir hilos
+- obtener estadisticas operativas
+
+## Envio y respuesta
+
+Endpoints principales:
+
+- `POST /api/omnichannel/send`
+- `POST /api/omnichannel/threads/{threadId}/reply`
+- `POST /api/omnichannel/send-whatsapp`
+- `POST /api/omnichannel/threads/{threadId}/reply-whatsapp`
+- `POST /api/omnichannel/send-whatsapp-template`
+- `GET /api/omnichannel/whatsapp-templates`
+- `GET /api/omnichannel/threads/{threadId}/whatsapp-window`
+- `POST /api/omnichannel/send-shared`
+
+Usalo para:
+
+- enviar emails nuevos
+- responder conversaciones existentes
+- operar WhatsApp libre o con template
+- enviar desde bandejas compartidas
+
+## Asignacion de trabajo
+
+Endpoints principales:
+
+- `POST /api/omnichannel/threads/{threadId}/assign`
+- `POST /api/omnichannel/threads/{threadId}/unassign`
+- `GET /api/omnichannel/emails/unassigned`
+- `GET /api/omnichannel/emails/assigned-to-me`
+- `POST /api/omnichannel/emails/{activityId}/assign`
+- `POST /api/omnichannel/emails/{activityId}/unassign`
+
+Usalo para:
+
+- repartir conversaciones
+- ver carga propia
+- rescatar emails sin responsable
+
+## Autenticacion Microsoft y estado de canal
+
+Endpoints principales:
+
+- `GET /api/omnichannel/auth/microsoft`
+- `GET /api/omnichannel/auth/microsoft/admin-consent`
+- `GET /api/omnichannel/auth/microsoft/callback`
+- `GET /api/omnichannel/auth/microsoft/status`
+- `POST /api/omnichannel/auth/microsoft/disconnect`
+- `POST /api/omnichannel/auth/microsoft/sync`
+- `GET /api/omnichannel/auth/health/tokens`
+- `GET /api/omnichannel/auth/whatsapp/status`
+
+Usalo para:
+
+- conectar o desconectar Microsoft
+- validar estado de tokens
+- disparar sync inicial
+- revisar estado de canal WhatsApp
+
+## Shared Mailboxes
+
+Endpoints principales:
+
+- `GET /api/shared-mailboxes`
+- `POST /api/shared-mailboxes`
+- `GET /api/shared-mailboxes/my-mailboxes`
+- `POST /api/shared-mailboxes/bootstrap`
+- `GET /api/shared-mailboxes/{id}`
+- `PUT /api/shared-mailboxes/{id}`
+- `DELETE /api/shared-mailboxes/{id}`
+- `POST /api/shared-mailboxes/{id}/users`
+- `DELETE /api/shared-mailboxes/{id}/users/{userId}`
+- `GET /api/shared-mailboxes/{id}/can-send/{userId}`
+- `POST /api/shared-mailboxes/{id}/sync`
+
+Usalo para:
+
+- administrar bandejas compartidas
+- asignar usuarios
+- validar permisos efectivos de envio
+- sincronizar la bandeja
+
+## Email Sync
+
+Endpoints principales:
+
+- `POST /api/v1/omnichannel/email/sync`
+- `GET /api/v1/omnichannel/email/sync/status/{jobId}`
+- `GET /api/v1/omnichannel/email/sync/state`
+- `POST /api/v1/omnichannel/email/sync/force-delta`
+- `POST /api/v1/omnichannel/email/sync/repair-delta`
+- `POST /api/v1/omnichannel/email/sync/backfill-empty`
+
+Usalo para:
+
+- lanzar sincronizacion historica o incremental
+- consultar progreso por job
+- reparar deltas inconsistentes
+- rellenar conversaciones faltantes
+
+## Spam Management
+
+Endpoints principales:
+
+- `GET /api/omnichannel/spam/blocked`
+- `POST /api/omnichannel/spam/block`
+- `DELETE /api/omnichannel/spam/unblock`
+
+Usalo para:
+
+- controlar remitentes bloqueados
+- reducir ruido operacional
+
+## Omnichannel Tags
+
+Endpoints principales:
+
+- `GET /api/omnichannel/tags`
+- `POST /api/omnichannel/tags`
+- `GET /api/omnichannel/tags/counts`
+- `PATCH /api/omnichannel/tags/{id}`
+- `DELETE /api/omnichannel/tags/{id}`
+- `POST /api/omnichannel/tags/assign/{threadId}`
+- `DELETE /api/omnichannel/tags/assign/{threadId}/{tagId}`
+- `POST /api/omnichannel/tags/bulk`
+
+Usalo para:
+
+- clasificar conversaciones
+- medir volumen por tag
+- operar etiquetado masivo
+
+## Mailgun webhook
+
+Endpoint principal:
+
+- `POST /api/webhooks/mailgun`
+
+Usalo para:
+
+- recibir eventos del proveedor de correo
+- alimentar el pipeline omnicanal
+
+## Flujo recomendado
+
+1. Conectar Microsoft o validar canal habilitado
+2. Sincronizar inbox
+3. Consultar `inbox`
+4. Asignar thread o email
+5. Responder por email, shared mailbox o WhatsApp
+6. Etiquetar y cerrar thread cuando termine el caso
+
+## Recomendaciones
+
+- Usa `inbox` y `threads` para vistas operativas.
+- Usa `email sync` para procesos de recuperacion o bootstrap.
+- No mezcles tags, asignacion y cierre en una sola accion sin trazabilidad.
+- Valida ventana de WhatsApp antes de responder fuera de template.

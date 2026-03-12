@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..");
 const outputDir = path.join(repoRoot, "generated");
 const outputPath = path.join(outputDir, "openapi.json");
+const specsDir = path.join(outputDir, "specs");
 const sourceUrl =
   process.env.OPENAPI_SOURCE_URL ?? "https://api.raul.ugps.io/api/openapi.json";
 const tagDescriptions = {
@@ -40,6 +41,7 @@ sanitizeSpec(spec);
 
 await mkdir(outputDir, { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(spec, null, 2)}\n`, "utf8");
+await writeDomainSpecs(spec);
 
 console.log(`Generated ${path.relative(repoRoot, outputPath)} from ${sourceUrl}`);
 
@@ -102,6 +104,163 @@ function sanitizeSpec(document) {
       }
     }
   });
+}
+
+async function writeDomainSpecs(document) {
+  await mkdir(specsDir, { recursive: true });
+
+  const domains = [
+    {
+      filename: "auth.json",
+      title: "Raul API - Acceso",
+      description: "Autenticacion, sesiones, usuarios y seguridad base.",
+      match: (routePath) => routePath === "/api" || routePath.startsWith("/api/auth"),
+    },
+    {
+      filename: "clients.json",
+      title: "Raul API - Clientes",
+      description: "Clientes, clientes padre, direcciones, contactos y activos asociados.",
+      match: (routePath) =>
+        routePath.startsWith("/api/v1/client") ||
+        routePath.startsWith("/api/v1/client_father") ||
+        routePath.startsWith("/api/v1/clients/") ||
+        routePath.startsWith("/api/v1/client-addresses") ||
+        routePath.startsWith("/api/v1/contact") ||
+        routePath.startsWith("/api/v1/vehicle") ||
+        routePath.startsWith("/api/v1/type_vehicle"),
+    },
+    {
+      filename: "operations.json",
+      title: "Raul API - Operaciones",
+      description: "Suscripciones, GPS, actividades, visitas y operacion tecnica.",
+      match: (routePath) =>
+        routePath.startsWith("/api/v1/subscription") ||
+        routePath.startsWith("/api/v1/gps") ||
+        routePath.startsWith("/api/v1/gps_") ||
+        routePath.startsWith("/api/v1/activity") ||
+        routePath.startsWith("/api/v1/activity-") ||
+        routePath.startsWith("/api/v1/visit") ||
+        routePath.startsWith("/api/v1/visit_") ||
+        routePath.startsWith("/api/v1/technician") ||
+        routePath.startsWith("/api/v1/patente") ||
+        routePath.startsWith("/api/v1/ticket"),
+    },
+    {
+      filename: "communications.json",
+      title: "Raul API - Comunicaciones",
+      description: "Inbox, omnichannel, bandejas compartidas, email sync, WhatsApp, spam y tags.",
+      match: (routePath) =>
+        routePath.startsWith("/api/omnichannel") ||
+        routePath.startsWith("/api/shared-mailboxes") ||
+        routePath.startsWith("/api/webhooks/mailgun") ||
+        routePath.startsWith("/api/v1/omnichannel/email/sync"),
+    },
+    {
+      filename: "sales.json",
+      title: "Raul API - Ventas",
+      description: "Cotizaciones, pipeline, outreach comercial, equipos cotizables y ventas de equipamiento.",
+      match: (routePath) =>
+        routePath.startsWith("/api/v1/quotes") ||
+        routePath.startsWith("/api/quotes/") ||
+        routePath.startsWith("/api/v1/quoter") ||
+        routePath.startsWith("/api/v1/pipeline-stages") ||
+        routePath.startsWith("/api/v1/equipment-sales") ||
+        routePath.startsWith("/api/v1/shipments"),
+    },
+    {
+      filename: "finance.json",
+      title: "Raul API - Finanzas",
+      description: "Facturas, boletas, ejecuciones de billing, cuentas por pagar y medios de pago.",
+      match: (routePath) =>
+        routePath.startsWith("/api/v1/factura") ||
+        routePath.startsWith("/api/v1/boleta") ||
+        routePath.startsWith("/api/billing") ||
+        routePath.startsWith("/api/v1/facturacion-2") ||
+        routePath.startsWith("/api/v1/expense") ||
+        routePath.startsWith("/api/v1/bank-account") ||
+        routePath.startsWith("/api/v1/payment-method") ||
+        routePath.startsWith("/api/v1/credit-card") ||
+        routePath.startsWith("/api/v1/credits") ||
+        routePath.startsWith("/api/v1/invoice"),
+    },
+    {
+      filename: "diagnostics.json",
+      title: "Raul API - Diagnostico",
+      description: "Health, consumo, conectividad, SIMs, webhooks fallidos y estados tecnicos.",
+      match: (routePath) =>
+        routePath.startsWith("/api/health") ||
+        routePath.startsWith("/api/v1/consumption") ||
+        routePath.startsWith("/api/v1/sim") ||
+        routePath.startsWith("/api/v1/catalog/chips") ||
+        routePath.startsWith("/api/v1/emnify") ||
+        routePath.startsWith("/api/omnichannel/failed-webhooks") ||
+        routePath.startsWith("/api/billing/health"),
+    },
+    {
+      filename: "settings.json",
+      title: "Raul API - Configuraciones",
+      description: "Catalogos, tipos, plantillas y configuraciones maestras del sistema.",
+      match: (routePath) =>
+        routePath.startsWith("/api/v1/rubro") ||
+        routePath.startsWith("/api/v1/city") ||
+        routePath.startsWith("/api/v1/type_of_contract") ||
+        routePath.startsWith("/api/v1/cargo") ||
+        routePath.startsWith("/api/v1/communication") ||
+        routePath.startsWith("/api/v1/client_lifecycle") ||
+        routePath.startsWith("/api/v1/billing/config") ||
+        routePath.startsWith("/api/notification-config") ||
+        routePath.startsWith("/api/v1/catalogs"),
+    },
+  ];
+
+  for (const domain of domains) {
+    const filteredPaths = Object.fromEntries(
+      Object.entries(document.paths).filter(([routePath]) => domain.match(routePath)),
+    );
+
+    if (Object.keys(filteredPaths).length === 0) {
+      continue;
+    }
+
+    const usedTags = new Set();
+    for (const pathItem of Object.values(filteredPaths)) {
+      for (const operation of Object.values(pathItem)) {
+        if (!operation || typeof operation !== "object" || Array.isArray(operation)) {
+          continue;
+        }
+
+        for (const tag of operation.tags ?? []) {
+          usedTags.add(tag);
+        }
+      }
+    }
+
+    const nextSpec = {
+      ...document,
+      info: {
+        ...document.info,
+        title: domain.title,
+        description: domain.description,
+      },
+      tags: (document.tags ?? []).filter((tag) => usedTags.has(tag.name)),
+      paths: filteredPaths,
+    };
+
+    if (Array.isArray(document["x-tagGroups"])) {
+      nextSpec["x-tagGroups"] = document["x-tagGroups"]
+        .map((group) => ({
+          ...group,
+          tags: group.tags.filter((tag) => usedTags.has(tag)),
+        }))
+        .filter((group) => group.tags.length > 0);
+    }
+
+    await writeFile(
+      path.join(specsDir, domain.filename),
+      `${JSON.stringify(nextSpec, null, 2)}\n`,
+      "utf8",
+    );
+  }
 }
 
 function normalizeTags(document) {
