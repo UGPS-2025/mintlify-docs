@@ -17,8 +17,16 @@
             "group": "Inicio",
             "pages": [
               "index",
+              "authentication",
+              "api-conventions",
+              "error-handling",
               "common-workflows",
               "ai-consumption",
+              "clients-guide",
+              "contacts-guide",
+              "gps-guide",
+              "subscriptions-guide",
+              "changelog",
               "api-reference/introduction"
             ]
           }

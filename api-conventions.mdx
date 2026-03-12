@@ -1,0 +1,98 @@
+---
+title: "Convenciones de la API"
+description: "Reglas transversales para paginacion, filtros, fechas, IDs, uploads y rutas legacy"
+---
+
+## Base operativa
+
+Usa siempre:
+
+- `https://api.raul.ugps.io`
+
+No asumas equivalencia con `api.ugps.io`.
+
+## IDs y tipos comunes
+
+- Los identificadores principales suelen ser UUID.
+- Muchos modulos legacy usan `snake_case`.
+- Algunos filtros pueden venir como `string` aunque semanticamente representen boolean o numero.
+
+## Paginacion
+
+En listados grandes:
+
+- prefiere endpoints `paginated`
+- cuando exista, prefiere cursor pagination sobre offset pagination
+
+Ejemplos:
+
+- `GET /api/v1/client/all/paginated`
+- `GET /api/v1/contact/all/paginated`
+- `GET /api/v1/gps_details/all/cursor`
+- `GET /api/v1/subscription_details/all/cursor`
+
+## Filtros y ordenamiento
+
+Campos frecuentes:
+
+- `page`
+- `limit`
+- `search`
+- `sort`
+- `order`
+
+Recomendacion:
+
+- no envies filtros vacios
+- usa `asc` o `desc` solo cuando el endpoint lo soporte
+- valida si el backend espera string, boolean o number
+
+## Fechas y horas
+
+- Prefiere formato ISO cuando el endpoint reciba fechas.
+- Si un campo representa fecha sin hora, no asumas timezone implicito.
+- Para integraciones, trata siempre fecha y fecha-hora como tipos distintos.
+
+## Uploads
+
+Hay endpoints con carga de archivos, por ejemplo:
+
+- avatars de usuario
+- logos de cliente
+- fotos de contacto
+- fichas tecnicas PDF de modelos GPS
+
+Antes de usar upload:
+
+- valida formato permitido
+- valida tamano
+- no asumas que todos los uploads comparten la misma respuesta
+
+## Rutas RESTful vs legacy
+
+Cuando existan ambas:
+
+- prefiere `/resource/{id}` sobre `/resource/get/{id}`
+- prefiere rutas sin verbos `create`, `update`, `delete`
+- deja la legacy solo para consumidores existentes
+
+## Alias funcionales
+
+Algunos modulos tienen endpoints equivalentes:
+
+- `/gps_details/...` y `/gps/...`
+- `/vehicle/...` y algunos flujos de `asset`
+
+Usa una sola familia por integracion y mantenla consistente.
+
+## Seguridad
+
+- Respeta `security` definido por OpenAPI.
+- No asumas que todos los endpoints requieren token.
+- Si una operacion devuelve `401`, intenta refresh solo una vez.
+
+## Recomendaciones operativas
+
+- Usa la pestaña **API** para contrato exacto.
+- Usa las guias editoriales para elegir la ruta correcta.
+- Si debes integrar modulos legacy, documenta internamente por que no usas la ruta RESTful.

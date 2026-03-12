@@ -1,0 +1,86 @@
+---
+title: "Clientes y direcciones"
+description: "Endpoints clave para alta, consulta y direccionamiento de clientes"
+---
+
+## Cuando usar esta guia
+
+Usa esta pagina si necesitas:
+
+- crear clientes
+- consultarlos por ID
+- listarlos con filtros o paginacion
+- registrar direcciones
+- subir branding basico
+
+## Endpoints principales
+
+### Crear cliente
+
+- `POST /api/v1/client`
+
+Usalo para alta comercial inicial.
+
+### Listar clientes
+
+- `GET /api/v1/client/all`
+- `GET /api/v1/client/all/paginated`
+
+Prefiere la variante paginada en backoffice e integraciones grandes.
+
+### Obtener cliente por ID
+
+- `GET /api/v1/client/{id}`
+
+### Actualizar o eliminar
+
+- `PUT /api/v1/client/{id}`
+- `DELETE /api/v1/client/{id}`
+
+### Branding
+
+- `POST /api/v1/client/{id}/logo`
+
+### Direcciones
+
+- `POST /api/v1/clients/{clientId}/addresses`
+- `GET /api/v1/clients/{clientId}/addresses`
+- `PATCH /api/v1/client-addresses/{id}`
+- `DELETE /api/v1/client-addresses/{id}`
+
+## Flujo recomendado
+
+1. Crear cliente
+2. Consultar cliente creado por ID
+3. Registrar direccion principal
+4. Subir logo si aplica
+5. Listar con paginacion para validar presencia operativa
+
+## Request minimo
+
+El contrato exacto depende del DTO publicado en OpenAPI. Usa la pestaña **API** para el payload final.
+
+Campos tipicamente sensibles:
+
+- RUT
+- razon social
+- ciudad o region
+- banderas de suscripcion
+
+## Errores comunes
+
+- `409` si el cliente ya existe
+- `404` si el ID no existe
+- `400` si faltan datos obligatorios
+
+## Recomendaciones
+
+- Trata respuestas de cliente como `snake_case` si el modulo viene de compatibilidad legacy.
+- En listados grandes usa `all/paginated`.
+- No mezcles direcciones y datos base del cliente en un mismo flujo si puedes separarlo.
+
+## Endpoints relacionados
+
+- `GET /api/v1/client_father/all`
+- `GET /api/v1/client_father/all/paginated`
+- `GET /api/v1/client_father/{id}`

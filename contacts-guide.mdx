@@ -1,0 +1,65 @@
+---
+title: "Contactos"
+description: "Endpoints clave para contactos, roles funcionales, fotos y merge"
+---
+
+## Casos de uso
+
+- crear contacto nuevo
+- asociarlo a un cliente
+- consultar contactos por cliente
+- administrar roles funcionales
+- resolver duplicados
+
+## Endpoints principales
+
+### Alta de contacto
+
+- `POST /api/v1/contact/create`
+- `POST /api/v1/contact/create-for-client`
+
+### Asociacion con cliente
+
+- `POST /api/v1/contact/associate-to-client`
+
+### Consulta
+
+- `GET /api/v1/contact/by-client/{clientId}`
+- `GET /api/v1/contact/all/paginated`
+- `GET /api/v1/contact/get/{contact_id}`
+- `GET /api/v1/contact/leads`
+
+### Roles funcionales
+
+- `GET /api/v1/contact/{contactId}/clients/{clientId}/functional-roles`
+- `PUT /api/v1/contact/{contactId}/clients/{clientId}/functional-roles`
+
+### Fotos
+
+- `POST /api/v1/contact/{id}/photo`
+- `DELETE /api/v1/contact/{id}/photo`
+
+### Duplicados
+
+- `GET /api/v1/contact/merge-preview`
+- `POST /api/v1/contact/merge`
+
+## Flujo recomendado
+
+1. Crear contacto
+2. Asociarlo al cliente si no nacio vinculado
+3. Configurar roles funcionales
+4. Cargar foto si aplica
+5. Ejecutar merge solo si detectas duplicidad real
+
+## Recomendaciones
+
+- Usa `create-for-client` cuando ya conoces el cliente destino.
+- Usa `all/paginated` para listados generales.
+- Revisa `merge-preview` antes de cualquier merge definitivo.
+
+## Errores comunes
+
+- `404` si el cliente o contacto no existe
+- `409` en asociaciones duplicadas o conflictos de merge
+- `400` si los roles funcionales no cumplen el contrato esperado

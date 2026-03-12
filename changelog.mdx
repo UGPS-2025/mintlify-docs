@@ -1,0 +1,50 @@
+---
+title: "Cambios y compatibilidad"
+description: "Como tratar rutas legacy, cambios breaking y evolucion de la API"
+---
+
+## Estado actual
+
+La referencia publicada se genera desde el OpenAPI servido por el backend productivo.
+
+Eso implica:
+
+- cambios nuevos aparecen primero en OpenAPI
+- las rutas legacy pueden convivir con rutas RESTful
+- los consumidores deben preferir endpoints modernos cuando existan ambos
+
+## Regla de compatibilidad
+
+Cuando detectes dos rutas equivalentes:
+
+- usa la RESTful
+- evita rutas con verbos en el path
+- manten la legacy solo para compatibilidad de integraciones existentes
+
+## Buen criterio para integradores
+
+- encapsula el acceso a endpoints legacy
+- no distribuyas rutas viejas en nuevos consumidores
+- usa esta documentacion y la pestaña **API** como contrato vigente
+
+## Cambios a monitorear
+
+- nuevos tags o modulos en OpenAPI
+- cambios en DTOs de request/response
+- nuevos codigos de error
+- endpoints que pasen de legacy a recomendados
+
+## Recomendacion operativa
+
+Antes de releases importantes:
+
+1. revisar `generated/openapi.json`
+2. validar cambios en la pestaña **API**
+3. revisar flujos comunes afectados
+4. comunicar cambios breaking a consumidores internos
+
+## Referencias
+
+- [Convenciones de la API](/api-conventions)
+- [Errores y reintentos](/error-handling)
+- [OpenAPI JSON](https://api.raul.ugps.io/api/openapi.json)

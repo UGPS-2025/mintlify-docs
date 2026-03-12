@@ -1,0 +1,116 @@
+---
+title: "Autenticacion"
+description: "Como iniciar sesion, usar Bearer JWT, renovar tokens y manejar errores de acceso"
+---
+
+## Resumen
+
+Los endpoints protegidos de Raul API usan autenticacion `Bearer` con JWT.
+
+Flujo recomendado:
+
+1. `POST /api/auth/login`
+2. Guardar `token`
+3. Enviar `Authorization: Bearer <token>`
+4. Renovar con `POST /api/auth/refresh`
+5. Invalidar sesion con `POST /api/auth/logout` cuando corresponda
+
+## Base URL
+
+- `https://api.raul.ugps.io`
+
+## Login
+
+Usa `POST /api/auth/login` para obtener el token inicial.
+
+```bash
+curl -X POST "https://api.raul.ugps.io/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "admin@ugps.cl",
+    "password": "password123"
+  }'
+```
+
+Respuesta esperada:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "....",
+  "user": {
+    "user_id": "uuid",
+    "email": "admin@ugps.cl"
+  }
+}
+```
+
+## Header de autorizacion
+
+Para cualquier endpoint protegido:
+
+```bash
+curl "https://api.raul.ugps.io/api/auth/users/me" \
+  -H "Authorization: Bearer TU_TOKEN"
+```
+
+## Validar sesion
+
+Usa `GET /api/auth/users/me` para confirmar que el token sigue vigente y conocer la identidad activa.
+
+Esto sirve para:
+
+- validar que el login fue correcto
+- inspeccionar permisos efectivos
+- comprobar si el token sigue usable antes de ejecutar flujos largos
+
+## Renovar token
+
+Usa `POST /api/auth/refresh` cuando el access token expire.
+
+```bash
+curl -X POST "https://api.raul.ugps.io/api/auth/refresh" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refresh_token": "TU_REFRESH_TOKEN"
+  }'
+```
+
+Recomendacion:
+
+- si recibes `401` en una operacion protegida, intenta una sola renovacion
+- si `refresh` tambien falla, exige login nuevo
+
+## Cerrar sesion
+
+Usa `POST /api/auth/logout` para invalidar refresh tokens.
+
+Eso aplica cuando:
+
+- el usuario cierra sesion manualmente
+- quieres revocar sesiones previas
+- detectas credenciales comprometidas
+
+## Errores comunes
+
+| HTTP | Causa habitual | Que hacer |
+|------|----------------|-----------|
+| `400` | Payload invalido | Revisar campos requeridos |
+| `401` | Token ausente, invalido o expirado | Renovar o volver a hacer login |
+| `403` | Usuario sin permisos o deshabilitado | Revisar rol y estado de cuenta |
+
+## Buenas practicas
+
+- No persistir access tokens en logs.
+- Renovar sesiones solo cuando sea necesario.
+- No reutilizar refresh tokens invalidados.
+- Validar sesion con `/users/me` al inicio de integraciones largas.
+
+## Endpoints relacionados
+
+- `POST /api/auth/login`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
+- `GET /api/auth/users/me`
+- `POST /api/auth/password-reset/request`
+- `POST /api/auth/password-reset/confirm`

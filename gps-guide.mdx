@@ -1,0 +1,62 @@
+---
+title: "GPS y dispositivos"
+description: "Endpoints clave para equipos GPS, catalogos, inventario y vistas operativas"
+---
+
+## Casos de uso
+
+- registrar un equipo GPS
+- consultar detalle y estado operativo
+- navegar catalogos
+- obtener resumenes y conteos
+
+## Endpoints principales
+
+### Equipos GPS
+
+- `POST /api/v1/gps_details/create`
+- `GET /api/v1/gps_details/{gps_details_id}`
+- `PUT /api/v1/gps_details/update/{gps_details_id}`
+- `DELETE /api/v1/gps_details/delete/{gps_details_id}`
+
+### Listados
+
+- `GET /api/v1/gps_details/all`
+- `GET /api/v1/gps_details/all/paginated`
+- `GET /api/v1/gps_details/all/cursor`
+
+### Vistas operativas
+
+- `GET /api/v1/gps_details/count`
+- `GET /api/v1/gps_details/summary`
+- `GET /api/v1/gps_details/related-data/{gps_details_id}`
+
+### Catalogos
+
+- modelos
+- plataformas
+- inventario
+- marcas
+- categorias
+- estados
+- historial
+
+## Recomendacion de consumo
+
+- Usa cursor pagination para volumen alto.
+- Si existe una ruta equivalente en `/gps/...` y `/gps_details/...`, prefiere una sola familia y mantenla consistente.
+- Usa `summary` y `count` para dashboards, no para detalle transaccional.
+
+## Flujo recomendado
+
+1. Consultar catalogos requeridos
+2. Crear equipo
+3. Recuperar detalle por ID
+4. Recuperar `related-data`
+5. Usar `summary` para validacion operativa
+
+## Errores comunes
+
+- `404` si el GPS no existe
+- `400` si faltan referencias a catalogos
+- `409` si hay conflicto de IMEI, serie o inventario

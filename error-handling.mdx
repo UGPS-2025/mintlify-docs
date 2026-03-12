@@ -1,0 +1,114 @@
+---
+title: "Errores y reintentos"
+description: "Como interpretar respuestas fallidas y cuando reintentar operaciones"
+---
+
+## Objetivo
+
+No todos los errores deben tratarse igual. Esta guia define que errores reintentar y cuales corregir en origen.
+
+## Regla general
+
+- `4xx`: el problema suele estar en request, permisos o estado de negocio
+- `5xx`: el problema suele estar en el backend o dependencia externa
+
+## Tabla rapida
+
+| HTTP | Significado | Reintentar | Accion recomendada |
+|------|-------------|------------|--------------------|
+| `400` | Payload invalido | No | Corregir request |
+| `401` | No autenticado o token expirado | Una vez | Intentar refresh y repetir |
+| `403` | Sin permisos o recurso bloqueado | No | Revisar rol, estado o policy |
+| `404` | Recurso inexistente | No | Validar ID o dependencia previa |
+| `409` | Conflicto de negocio | No | Resolver duplicidad o estado |
+| `422` | Regla de validacion | No | Corregir datos |
+| `429` | Limite de uso | Si | Backoff exponencial |
+| `500` | Error interno | Si | Retry con backoff y observabilidad |
+| `502/503/504` | Degradacion temporal | Si | Retry controlado |
+
+## Politica de retry
+
+Reintenta solo en estos casos:
+
+- `429`
+- `500`
+- `502`
+- `503`
+- `504`
+- `401` solo despues de renovar token
+
+No reintentes automaticamente:
+
+- `400`
+- `403`
+- `404`
+- `409`
+- `422`
+
+## Backoff recomendado
+
+```text
+intento 1: inmediato
+intento 2: +1s
+intento 3: +3s
+intento 4: +7s
+```
+
+Maximo recomendado:
+
+- 3 a 4 intentos
+
+## Payload de error
+
+El shape puede variar segun modulo o stack legacy. Usa esta heuristica:
+
+- leer `statusCode`
+- leer `message`
+- leer `error` si existe
+
+Ejemplo tipico:
+
+```json
+{
+  "statusCode": 404,
+  "message": "Client not found",
+  "error": "Not Found"
+}
+```
+
+## Casos frecuentes
+
+### `401` tras login exitoso
+
+- token vencido
+- token mal formateado
+- falta prefijo `Bearer `
+
+### `409` al crear
+
+- cliente ya existe por RUT
+- recurso duplicado
+- regla de unicidad incumplida
+
+### `404` en rutas encadenadas
+
+- se creo el recurso padre en otro ambiente
+- se uso una ruta legacy con ID distinto al esperado
+- el recurso fue transferido o eliminado
+
+## Observabilidad minima
+
+Para cualquier integracion registra:
+
+- endpoint
+- metodo HTTP
+- status code
+- correlation id si existe
+- mensaje de error
+- payload resumido sin secretos
+
+## Referencias
+
+- [Autenticacion](/authentication)
+- [Convenciones de la API](/api-conventions)
+- [Introduccion API](/api-reference/introduction)

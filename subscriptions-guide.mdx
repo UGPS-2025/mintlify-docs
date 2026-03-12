@@ -1,0 +1,56 @@
+---
+title: "Suscripciones y planes"
+description: "Endpoints clave para planes, alta de suscripciones, transferencias y estados"
+---
+
+## Casos de uso
+
+- crear suscripcion
+- consultar estado por cliente o por ID
+- transferir entre clientes
+- revertir cancelaciones
+- consultar catalogos de plan, estado y moneda
+
+## Endpoints principales
+
+### Suscripciones
+
+- `POST /api/v1/subscription_details/create`
+- `GET /api/v1/subscription_details/get/{subscription_detail_id}`
+- `GET /api/v1/subscription_details/client/{client_id}`
+- `GET /api/v1/subscription_details/summary`
+- `GET /api/v1/subscription_details/all/paginated`
+- `GET /api/v1/subscription_details/all/cursor`
+
+### Operaciones de negocio
+
+- `POST /api/v1/subscription_details/assign-to-child`
+- `POST /api/v1/subscription_details/transfer`
+- `POST /api/v1/subscription_details/{id}/revert-cancellation`
+
+### Planes y catalogos
+
+- `GET /api/v1/subscription_plan/all`
+- `GET /api/v1/subscription_status/all`
+- `GET /api/v1/subscription_currency/all`
+- `GET /api/v1/subscription_details/cancellation_reasons`
+
+## Flujo recomendado
+
+1. Consultar plan disponible
+2. Crear suscripcion
+3. Consultar suscripcion creada por ID
+4. Verificar resumen o vista por cliente
+5. Transferir o reasignar solo si cambia la estructura comercial
+
+## Recomendaciones
+
+- Usa consultas por cliente para backoffice comercial.
+- Usa cursor pagination para recorridos masivos.
+- Antes de revertir una cancelacion, valida estado y trazabilidad interna.
+
+## Errores comunes
+
+- `404` si la suscripcion no existe
+- `409` en cambios de estado incompatibles
+- `400` si faltan dependencias comerciales o referencias previas
