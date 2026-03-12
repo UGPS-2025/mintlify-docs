@@ -1,0 +1,170 @@
+---
+title: "Ventas y cotizaciones"
+description: "Endpoints clave para cotizaciones, pipeline, dispositivos, ventas de equipamiento y funciones de IA comercial"
+---
+
+## Alcance
+
+Este dominio cubre el ciclo comercial antes de billing.
+
+Incluye:
+
+- cotizaciones
+- pipeline comercial
+- catalogo de dispositivos cotizables
+- ventas de equipamiento
+- envios
+- funciones de IA y outreach
+
+## Quotes
+
+Endpoints principales:
+
+- `POST /api/v1/quotes`
+- `GET /api/v1/quotes`
+- `GET /api/v1/quotes/{id}`
+- `PATCH /api/v1/quotes/{id}`
+- `DELETE /api/v1/quotes/{id}`
+- `DELETE /api/v1/quotes/batch/cancel`
+- `POST /api/v1/quotes/calculate`
+- `POST /api/v1/quotes/{id}/clone`
+- `POST /api/v1/quotes/{id}/duplicate`
+- `POST /api/v1/quotes/{id}/pdf`
+- `GET /api/v1/quotes/{id}/pdf`
+- `GET /api/v1/quotes/{id}/activities`
+- `POST /api/v1/quotes/{id}/send-email`
+- `GET /api/v1/quotes/{id}/email-template`
+
+Usalo para:
+
+- crear una cotizacion
+- recalcular montos
+- revisar detalle y actividades
+- clonar o duplicar propuestas
+- generar PDF y enviar por correo
+
+## Pipeline comercial
+
+Endpoints principales:
+
+- `GET /api/v1/quotes/pipeline-stages`
+- `GET /api/v1/quotes/kanban`
+- `PATCH /api/v1/quotes/{id}/pipeline-stage`
+- `GET /api/v1/pipeline-stages`
+- `POST /api/v1/pipeline-stages`
+- `GET /api/v1/pipeline-stages/{id}`
+- `PATCH /api/v1/pipeline-stages/{id}`
+- `DELETE /api/v1/pipeline-stages/{id}`
+- `PATCH /api/v1/pipeline-stages/reorder`
+
+Usalo para:
+
+- operar embudo comercial
+- mover oportunidades entre etapas
+- administrar etapas disponibles
+- ordenar pipeline para vistas Kanban
+
+## Quoter devices
+
+Endpoints principales:
+
+- `GET /api/v1/quoter/devices`
+- `POST /api/v1/quoter/devices`
+- `GET /api/v1/quoter/devices/{id}`
+- `PATCH /api/v1/quoter/devices/{id}`
+- `DELETE /api/v1/quoter/devices/{id}`
+- `GET /api/v1/quoter/devices/{id}/accessories`
+- `POST /api/v1/quoter/devices/{id}/upload`
+- `DELETE /api/v1/quoter/devices/{id}/file`
+
+Usalo para:
+
+- administrar dispositivos cotizables
+- cargar fichas o archivos
+- consultar accesorios relacionados
+
+## IA para cotizaciones
+
+Endpoints principales:
+
+- `POST /api/quotes/ai/generate`
+- `POST /api/quotes/ai/regenerate-section`
+- `GET /api/quotes/ai/{quoteId}`
+- `PUT /api/quotes/ai/{quoteId}`
+- `POST /api/quotes/ai/mark-accepted`
+- `POST /api/quotes/ai/generate-email`
+
+Usalo para:
+
+- generar contenido de cotizacion
+- regenerar secciones
+- actualizar texto comercial
+- generar email asociado a la propuesta
+
+## Outreach IA sobre cotizaciones
+
+Endpoints principales:
+
+- `POST /api/quotes/{quoteId}/outreach`
+- `GET /api/quotes/{quoteId}/outreach`
+- `GET /api/quotes/{quoteId}/outreach/intelligence`
+- `GET /api/quotes/{quoteId}/outreach/effectiveness`
+- `GET /api/quotes/{quoteId}/outreach/{sequenceId}`
+- `PATCH /api/quotes/{quoteId}/outreach/{sequenceId}`
+- `POST /api/quotes/{quoteId}/outreach/{sequenceId}/messages/generate`
+- `GET /api/quotes/{quoteId}/outreach/{sequenceId}/messages`
+- `PATCH /api/quotes/{quoteId}/outreach/messages/{messageId}`
+- `POST /api/quotes/{quoteId}/outreach/messages/{messageId}/approve`
+- `POST /api/quotes/{quoteId}/outreach/messages/{messageId}/send`
+- `POST /api/quotes/{quoteId}/outreach/messages/{messageId}/regenerate`
+- `POST /api/quotes/{quoteId}/outreach/probability`
+- `POST /api/quotes/{quoteId}/outreach/messages/{messageId}/success`
+
+Usalo para:
+
+- automatizar seguimiento comercial
+- generar secuencias y mensajes
+- medir efectividad
+- aprobar y enviar outreach
+
+## Equipment sales
+
+Endpoints principales:
+
+- `GET /api/v1/equipment-sales`
+- `POST /api/v1/equipment-sales`
+- `GET /api/v1/equipment-sales/{id}`
+- `PUT /api/v1/equipment-sales/{id}`
+- `DELETE /api/v1/equipment-sales/{id}`
+
+Usalo para:
+
+- registrar ventas de equipamiento
+- relacionarlas con cliente, suscripcion o visita
+- mantener trazabilidad de montos y modalidad de pago
+
+## Shipments
+
+Endpoints principales:
+
+- `POST /api/v1/shipments/quote`
+
+Usalo para:
+
+- cotizar despacho o logistica asociada a la venta
+
+## Flujo recomendado
+
+1. Definir dispositivos o catalogo comercial
+2. Crear cotizacion
+3. Calcular montos y validar pipeline
+4. Generar PDF o email
+5. Ejecutar outreach si la oportunidad lo requiere
+6. Registrar venta de equipamiento si la cotizacion se concreta
+
+## Recomendaciones
+
+- Usa `quotes` como registro principal de oportunidad.
+- Usa `pipeline stages` para el estado comercial y no mezcles ese estado con billing.
+- Usa `equipment sales` solo cuando la venta ya exista como hecho comercial.
+- Separa claramente IA de contenido comercial y envio real al cliente.
