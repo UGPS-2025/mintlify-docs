@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,7 +8,7 @@ const repoRoot = path.resolve(__dirname, "..");
 const outputDir = path.join(repoRoot, "generated");
 const outputPath = path.join(outputDir, "openapi.json");
 const specsDir = path.join(outputDir, "specs");
-const sourceUrl =
+const sourceRef =
   process.env.OPENAPI_SOURCE_URL ?? "https://api.raul.ugps.io/api/openapi.json";
 const tagDescriptions = {
   Auth: "Autenticacion, sesiones, usuarios y recuperacion de acceso.",
@@ -21,17 +21,7 @@ const tagDescriptions = {
   Analytics: "Indicadores, reportes y consultas agregadas.",
 };
 
-const response = await fetch(sourceUrl, {
-  headers: {
-    accept: "application/json",
-  },
-});
-
-if (!response.ok) {
-  throw new Error(`Failed to fetch OpenAPI source: ${response.status} ${response.statusText}`);
-}
-
-const spec = await response.json();
+const spec = await loadSpec(sourceRef);
 
 if (typeof spec?.openapi !== "string") {
   throw new Error("Remote OpenAPI spec is missing a valid openapi version string");
@@ -43,7 +33,33 @@ await mkdir(outputDir, { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(spec, null, 2)}\n`, "utf8");
 await writeDomainSpecs(spec);
 
-console.log(`Generated ${path.relative(repoRoot, outputPath)} from ${sourceUrl}`);
+console.log(`Generated ${path.relative(repoRoot, outputPath)} from ${sourceRef}`);
+
+async function loadSpec(source) {
+  if (/^https?:\/\//i.test(source)) {
+    const response = await fetch(source, {
+      headers: {
+        accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch OpenAPI source: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  const localPath =
+    source.startsWith("file://")
+      ? fileURLToPath(source)
+      : path.isAbsolute(source)
+        ? source
+        : path.resolve(repoRoot, source);
+
+  const raw = await readFile(localPath, "utf8");
+  return JSON.parse(raw);
+}
 
 function sanitizeSpec(document) {
   document.info = {
@@ -108,6 +124,7 @@ function sanitizeSpec(document) {
 
 async function writeDomainSpecs(document) {
   await mkdir(specsDir, { recursive: true });
+  const coveredPaths = new Set();
 
   const domains = [
     {
@@ -121,102 +138,165 @@ async function writeDomainSpecs(document) {
       title: "Raul API - Clientes",
       description: "Clientes, clientes padre, direcciones, contactos y activos asociados.",
       match: (routePath) =>
-        routePath.startsWith("/api/v1/client") ||
-        routePath.startsWith("/api/v1/client_father") ||
-        routePath.startsWith("/api/v1/clients/") ||
-        routePath.startsWith("/api/v1/client-addresses") ||
-        routePath.startsWith("/api/v1/contact") ||
-        routePath.startsWith("/api/v1/vehicle") ||
-        routePath.startsWith("/api/v1/type_vehicle"),
+        matchesAnyPrefix(routePath, [
+          "/api/v1/client",
+          "/api/v1/client_father",
+          "/api/v1/clients/",
+          "/api/v1/client-addresses",
+          "/api/v1/contact",
+          "/api/v1/vehicle",
+          "/api/v1/type_vehicle",
+          "/api/v1/asset",
+          "/api/v1/plataform_client",
+        ]),
     },
     {
       filename: "operations.json",
       title: "Raul API - Operaciones",
       description: "Suscripciones, GPS, actividades, visitas y operacion tecnica.",
       match: (routePath) =>
-        routePath.startsWith("/api/v1/subscription") ||
-        routePath.startsWith("/api/v1/gps") ||
-        routePath.startsWith("/api/v1/gps_") ||
-        routePath.startsWith("/api/v1/activity") ||
-        routePath.startsWith("/api/v1/activity-") ||
-        routePath.startsWith("/api/v1/visit") ||
-        routePath.startsWith("/api/v1/visit_") ||
-        routePath.startsWith("/api/v1/technician") ||
-        routePath.startsWith("/api/v1/patente") ||
-        routePath.startsWith("/api/v1/ticket"),
+        matchesAnyPrefix(routePath, [
+          "/api/v1/subscription",
+          "/api/v1/gps",
+          "/api/v1/gps_",
+          "/api/v1/activity",
+          "/api/v1/activity-",
+          "/api/v1/visit",
+          "/api/v1/visit_",
+          "/api/v1/technician",
+          "/api/v1/patente",
+          "/api/v1/patentes",
+          "/api/v1/ticket",
+          "/api/v1/transfers",
+          "/api/v1/tasks",
+          "/api/v1/inactive-devices",
+        ]),
     },
     {
       filename: "communications.json",
       title: "Raul API - Comunicaciones",
       description: "Inbox, omnichannel, bandejas compartidas, email sync, WhatsApp, spam y tags.",
       match: (routePath) =>
-        routePath.startsWith("/api/omnichannel") ||
-        routePath.startsWith("/api/shared-mailboxes") ||
-        routePath.startsWith("/api/webhooks/mailgun") ||
-        routePath.startsWith("/api/v1/omnichannel/email/sync"),
+        matchesAnyPrefix(routePath, [
+          "/api/omnichannel",
+          "/api/shared-mailboxes",
+          "/api/webhooks/mailgun",
+          "/api/v1/omnichannel/email/sync",
+        ]),
     },
     {
       filename: "sales.json",
       title: "Raul API - Ventas",
       description: "Cotizaciones, pipeline, outreach comercial, equipos cotizables y ventas de equipamiento.",
       match: (routePath) =>
-        routePath.startsWith("/api/v1/quotes") ||
-        routePath.startsWith("/api/quotes/") ||
-        routePath.startsWith("/api/v1/quoter") ||
-        routePath.startsWith("/api/v1/pipeline-stages") ||
-        routePath.startsWith("/api/v1/equipment-sales") ||
-        routePath.startsWith("/api/v1/shipments"),
+        matchesAnyPrefix(routePath, [
+          "/api/v1/quotes",
+          "/api/quotes/",
+          "/api/v1/quoter",
+          "/api/v1/pipeline-stages",
+          "/api/v1/equipment-sales",
+          "/api/v1/shipments",
+          "/api/v1/shipment-orders",
+          "/api/v1/sellers",
+          "/api/v1/currency",
+          "/api/v1/accessory",
+          "/api/v1/plans",
+          "/api/v1/plan-categories",
+          "/api/product-knowledge",
+          "/api/v1/warehouse",
+        ]),
     },
     {
       filename: "finance.json",
       title: "Raul API - Finanzas",
       description: "Facturas, boletas, ejecuciones de billing, cuentas por pagar y medios de pago.",
       match: (routePath) =>
-        routePath.startsWith("/api/v1/factura") ||
-        routePath.startsWith("/api/v1/boleta") ||
-        routePath.startsWith("/api/billing") ||
-        routePath.startsWith("/api/v1/facturacion-2") ||
-        routePath.startsWith("/api/v1/expense") ||
-        routePath.startsWith("/api/v1/bank-account") ||
-        routePath.startsWith("/api/v1/payment-method") ||
-        routePath.startsWith("/api/v1/credit-card") ||
-        routePath.startsWith("/api/v1/credits") ||
-        routePath.startsWith("/api/v1/invoice"),
+        matchesAnyPrefix(routePath, [
+          "/api/v1/factura",
+          "/api/v1/boleta",
+          "/api/billing",
+          "/api/v1/facturacion-2",
+          "/api/v1/expense",
+          "/api/v1/bank-account",
+          "/api/v1/payment-method",
+          "/api/v1/credit-card",
+          "/api/v1/credits",
+          "/api/v1/invoice",
+          "/api/v1/supplier",
+          "/api/v1/accounting-account",
+          "/api/v1/recurring",
+          "/api/accounts-payable/expenses",
+          "/api/v1/descuentos",
+          "/api/v1/billing/invoices",
+          "/api/v1/billing/clients/",
+          "/api/v1/billing/groups/",
+          "/api/v1/payments",
+          "/api/v1/webhooks/mercadopago",
+          "/api/v1/dte",
+          "/api/v1/sii-company",
+          "/api/v1/analytics",
+          "/api/analytics/graphics",
+        ]),
     },
     {
       filename: "diagnostics.json",
       title: "Raul API - Diagnostico",
       description: "Health, consumo, conectividad, SIMs, webhooks fallidos y estados tecnicos.",
       match: (routePath) =>
-        routePath.startsWith("/api/health") ||
-        routePath.startsWith("/api/v1/consumption") ||
-        routePath.startsWith("/api/v1/sim") ||
-        routePath.startsWith("/api/v1/catalog/chips") ||
-        routePath.startsWith("/api/v1/emnify") ||
-        routePath.startsWith("/api/omnichannel/failed-webhooks") ||
-        routePath.startsWith("/api/billing/health"),
+        matchesAnyPrefix(routePath, [
+          "/api/health",
+          "/api/v1/consumption",
+          "/api/v1/sim",
+          "/api/v1/catalog/chips",
+          "/api/v1/chip-catalog",
+          "/api/v1/emnify",
+          "/api/omnichannel/failed-webhooks",
+          "/api/billing/health",
+          "/api/v1/atlas",
+          "/api/v1/flespi",
+        ]),
     },
     {
       filename: "settings.json",
       title: "Raul API - Configuraciones",
       description: "Catalogos, tipos, plantillas y configuraciones maestras del sistema.",
       match: (routePath) =>
-        routePath.startsWith("/api/v1/rubro") ||
-        routePath.startsWith("/api/v1/city") ||
-        routePath.startsWith("/api/v1/type_of_contract") ||
-        routePath.startsWith("/api/v1/cargo") ||
-        routePath.startsWith("/api/v1/communication") ||
-        routePath.startsWith("/api/v1/client_lifecycle") ||
-        routePath.startsWith("/api/v1/billing/config") ||
-        routePath.startsWith("/api/notification-config") ||
-        routePath.startsWith("/api/v1/catalogs"),
+        matchesAnyPrefix(routePath, [
+          "/api/v1/rubro",
+          "/api/v1/city",
+          "/api/v1/type_of_contract",
+          "/api/v1/cargo",
+          "/api/v1/communication",
+          "/api/v1/client_lifecycle",
+          "/api/v1/billing/config",
+          "/api/notification-config",
+          "/api/v1/catalogs",
+        ]),
+    },
+    {
+      filename: "platform.json",
+      title: "Raul API - Plataforma",
+      description: "Portal cliente, templates, RRHH, notificaciones y automatizaciones internas.",
+      match: (routePath) =>
+        matchesAnyPrefix(routePath, [
+          "/api/hr",
+          "/api/templates",
+          "/api/notifications",
+          "/api/portal",
+          "/api/ai-support",
+          "/api/teams-bot",
+          "/api/changelog",
+        ]),
     },
   ];
 
   for (const domain of domains) {
-    const filteredPaths = Object.fromEntries(
-      Object.entries(document.paths).filter(([routePath]) => domain.match(routePath)),
-    );
+    const matchingEntries = Object.entries(document.paths).filter(([routePath]) => domain.match(routePath));
+    for (const [routePath] of matchingEntries) {
+      coveredPaths.add(routePath);
+    }
+
+    const filteredPaths = Object.fromEntries(matchingEntries);
 
     if (Object.keys(filteredPaths).length === 0) {
       continue;
@@ -261,6 +341,17 @@ async function writeDomainSpecs(document) {
       "utf8",
     );
   }
+
+  const missingPaths = Object.keys(document.paths ?? {}).filter((routePath) => !coveredPaths.has(routePath));
+  if (missingPaths.length > 0) {
+    throw new Error(
+      `OpenAPI paths not assigned to a Mintlify domain spec (${missingPaths.length}): ${missingPaths.slice(0, 20).join(", ")}`,
+    );
+  }
+}
+
+function matchesAnyPrefix(routePath, prefixes) {
+  return prefixes.some((prefix) => routePath.startsWith(prefix));
 }
 
 function normalizeTags(document) {

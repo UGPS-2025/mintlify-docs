@@ -1,34 +1,68 @@
-> **Customize this file**: Tailor this template to your project by noting specific contribution types you're looking for, adding a Code of Conduct, or adjusting the writing guidelines to match your style.
+# Contributing to Raul API Docs
 
-# Contribute to the documentation
+Gracias por mejorar la documentacion de Raul.
 
-Thank you for your interest in contributing to our documentation! This guide will help you get started.
+## Antes de abrir cambios
 
-## How to contribute
+1. Usa Node `20`:
 
-### Option 1: Edit directly on GitHub
+```bash
+nvm use
+```
 
-1. Navigate to the page you want to edit
-2. Click the "Edit this file" button (the pencil icon)
-3. Make your changes and submit a pull request
+2. Crea una rama para tu trabajo.
+3. Si tu cambio toca endpoints, OpenAPI o agrupacion de dominio, regenera artefactos:
 
-### Option 2: Local development
+```bash
+npm run openapi:generate
+```
 
-1. Fork and clone this repository
-2. Install the Mintlify CLI: `npm i -g mint`
-3. Create a branch for your changes
-4. Make changes
-5. Navigate to the docs directory and run `mint dev`
-6. Preview your changes at `http://localhost:3000`
-7. Commit your changes and submit a pull request
+## Checklist minimo
 
-For more details on local development, see our [development guide](development.mdx).
+Antes de abrir PR, corre:
 
-## Writing guidelines
+```bash
+npm run docs:validate
+npm run docs:broken-links
+```
 
-- **Use active voice**: "Run the command" not "The command should be run"
-- **Address the reader directly**: Use "you" instead of "the user"
-- **Keep sentences concise**: Aim for one idea per sentence
-- **Lead with the goal**: Start instructions with what the user wants to accomplish
-- **Use consistent terminology**: Don't alternate between synonyms for the same concept
-- **Include examples**: Show, don't just tell
+Si cambiaste el flujo OpenAPI o el backend ya expone nuevos endpoints, corre ademas:
+
+```bash
+npm run openapi:assert-clean
+```
+
+## Cuando debes regenerar OpenAPI
+
+Haz `npm run openapi:generate` cuando:
+
+- cambie `scripts/generate-openapi.mjs`
+- cambie la clasificacion de dominios en `docs.json`
+- aparezcan endpoints nuevos en el backend
+- se renombren grupos funcionales de la referencia API
+
+## Estilo editorial
+
+- Escribe en espanol claro y directo.
+- Prioriza contexto de negocio en las guias y contrato exacto en la pestaña **API**.
+- No dupliques todo el OpenAPI en MDX manual si la referencia ya lo cubre.
+- Cuando una regla sea inferida del backend actual, dilo explicitamente.
+- Prefiere ejemplos concretos y flujos completos por sobre listas abstractas.
+
+## PRs recomendados
+
+Un PR de docs ideal deja claro:
+
+- que paginas cambiaste
+- si hubo que regenerar `generated/openapi.json`
+- si se agregaron o movieron specs dentro de `generated/specs/*`
+- que validaciones corriste
+
+## CI
+
+El repo valida automaticamente:
+
+- generacion OpenAPI
+- drift de artefactos generados
+- build de Mintlify
+- broken links

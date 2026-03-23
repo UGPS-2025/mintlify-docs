@@ -1839,6 +1839,44 @@
         ]
       }
     },
+    "/api/v1/asset/all": {
+      "get": {
+        "description": "Operacion: Get all assets/vehicles (alias).",
+        "operationId": "VehicleController_getAllAssets",
+        "parameters": [
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of assets/vehicles"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get all assets/vehicles (alias)",
+        "tags": [
+          "Vehicle/Asset"
+        ]
+      }
+    },
     "/api/v1/vehicle/allFilters": {
       "get": {
         "description": "Operacion: Get all vehicles with filters.",
@@ -2060,6 +2098,50 @@
         "summary": "Get all vehicle types",
         "tags": [
           "Vehicle/Asset"
+        ]
+      }
+    },
+    "/api/v1/plataform_client/update-client-id": {
+      "put": {
+        "description": "Después de crear un cliente, actualiza los registros de plataforma que fueron creados con un ID temporal al ID real del cliente.",
+        "operationId": "PlataformClientController_updateClientIds",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlataformClientIdsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registros actualizados correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePlataformClientIdsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos de entrada inválidos"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Actualiza client_id temporal a real en plataform_client",
+        "tags": [
+          "PlataformClient"
         ]
       }
     },

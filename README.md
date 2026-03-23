@@ -1,71 +1,77 @@
-# Mintlify Starter Kit
+# Raul API Docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+Documentacion tecnica de Raul API en Mintlify.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+Este repo publica dos cosas a la vez:
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+- **Guias editoriales** para entender dominios, permisos y flujos
+- **Referencia API** generada desde el OpenAPI productivo de `https://api.raul.ugps.io/api/openapi.json`
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+## Requisitos
 
-## AI-assisted writing
+- Node `20` (`.nvmrc`)
+- `git`
+- acceso a internet para validar Mintlify y descargar el CLI via `npx`
 
-Set up your AI coding tool to work with Mintlify:
+## Scripts principales
 
 ```bash
-npx skills add https://mintlify.com/docs
+npm run openapi:generate      # Regenera generated/openapi.json y generated/specs/*
+npm run openapi:assert-clean  # Falla si los artefactos generados difieren de git
+npm run openapi:check         # Generate + assert-clean
+npm run docs:validate         # Valida build de Mintlify
+npm run docs:broken-links     # Revisa links rotos
+npm run docs:ci               # Flujo completo de CI
+npm run docs:dev              # Preview local con tu Node actual
+npm run docs:dev:lts          # Preview local forzando Node 20
 ```
 
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
+## Flujo recomendado de trabajo
 
-See the [AI tools guides](/ai-tools) for tool-specific setup.
+1. Usa `nvm use`.
+2. Edita las paginas `.mdx` o la configuracion `docs.json`.
+3. Si cambias algo relacionado con endpoints o agrupacion OpenAPI, corre `npm run openapi:generate`.
+4. Antes de cerrar cambios, corre:
 
-## Development
-
-Use Node LTS for Mintlify CLI compatibility. This repo includes `.nvmrc` and currently expects Node 20.
-
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
-npm i -g mint
+```bash
+npm run docs:validate
+npm run docs:broken-links
 ```
 
-Generate the local OpenAPI artifact before opening the docs:
+## OpenAPI y dominio de specs
 
-```
+El archivo [scripts/generate-openapi.mjs](./scripts/generate-openapi.mjs) hace tres cosas:
+
+1. descarga o carga el OpenAPI fuente
+2. normaliza detalles para Mintlify
+3. divide la referencia por dominios (`auth`, `clients`, `operations`, `communications`, `sales`, `finance`, `diagnostics`, `settings`, `platform`)
+
+Si aparece una ruta nueva que no calza en ningun dominio, la generacion falla. Eso evita dejar endpoints fuera del tab **API**.
+
+## CI y drift detection
+
+El repo incluye workflows para:
+
+- validar docs en PR y `main`
+- regenerar OpenAPI y comprobar que los artefactos generados estan committed
+- detectar drift del OpenAPI remoto en ejecuciones programadas
+
+Si CI marca drift, regenera con:
+
+```bash
 npm run openapi:generate
 ```
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
+y commitea los cambios de `generated/openapi.json` y `generated/specs/*`.
 
-```
-mint dev
-```
+## Publicacion
 
-If you are on a non-LTS Node version and just want a working local preview, use:
+Mintlify despliega este repo; el backend solo expone:
 
-```
-npm run docs:dev:lts
-```
+- `/api/openapi.json`
+- `/api/docs` como entrypoint hacia la UI de docs
 
-View your local preview at `http://localhost:3000`.
+## Referencias
 
-## Publishing changes
-
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
-
-## Need help?
-
-### Troubleshooting
-
-- If `mint dev` says Node 25+ is unsupported: switch to Node LTS first, for example `nvm use`, or run `npm run docs:dev:lts`.
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
-- If API reference generation fails: regenerate `generated/openapi.json` with `npm run openapi:generate`.
-
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+- [Mintlify docs](https://mintlify.com/docs)
+- [OpenAPI productivo](https://api.raul.ugps.io/api/openapi.json)

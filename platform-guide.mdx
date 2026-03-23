@@ -1,0 +1,127 @@
+---
+title: "Plataforma y backoffice"
+description: "Portal cliente, templates, RRHH, notificaciones y automatizaciones internas de Raul"
+---
+
+## Alcance
+
+Esta seccion agrupa capacidades transversales que no pertenecen a un unico flujo comercial u operativo.
+
+Incluye:
+
+- portal cliente
+- templates
+- notificaciones
+- RRHH
+- herramientas internas
+- automatizaciones y asistentes
+
+## Submenus principales
+
+- Portal cliente
+- Templates
+- Notificaciones
+- RRHH
+- Tareas internas
+- AI Support
+- Teams Bot
+- Changelog
+
+## Portal cliente
+
+Endpoints principales:
+
+- `POST /api/portal/auth/request`
+- `POST /api/portal/auth/exchange`
+- `POST /api/portal/auth/admin/generate-link`
+- `GET /api/portal/invoices/dashboard`
+- `GET /api/portal/invoices`
+- `GET /api/portal/invoices/{id}`
+- `GET /api/portal/invoices/{id}/pdf`
+- `GET /api/portal/invoices/{id}/xml`
+- `POST /api/portal/invoices/pay`
+- `POST /api/portal/invoices/{id}/notify-transfer`
+- `GET /api/portal/support/tickets`
+- `GET /api/portal/support/tickets/{ticketId}`
+- `POST /api/portal/support/tickets/{ticketId}/comments`
+
+Usalo para:
+
+- autenticar clientes finales con flujos dedicados
+- exponer invoices y pagos fuera del backoffice
+- habilitar soporte self-service
+
+## Templates
+
+Endpoints principales:
+
+- `GET /api/templates/folders/tree`
+- `GET /api/templates/folders`
+- `POST /api/templates/folders`
+- `PUT /api/templates/folders/{id}`
+- `PUT /api/templates/folders/{id}/move`
+- `GET /api/templates`
+- `POST /api/templates`
+- `GET /api/templates/{id}`
+- `PUT /api/templates/{id}`
+- `DELETE /api/templates/{id}`
+- `POST /api/templates/sync-from-meta`
+- `POST /api/templates/{id}/submit-to-meta`
+- `POST /api/templates/{id}/preview`
+
+Usalo para:
+
+- administrar carpetas y librerias de templates
+- sincronizar con Meta cuando aplica
+- previsualizar contenido antes de publicarlo
+
+## RRHH y tareas
+
+Endpoints principales:
+
+- `GET /api/hr/departments`
+- `POST /api/hr/departments`
+- `GET /api/hr/positions`
+- `POST /api/hr/positions`
+- `GET /api/hr/employees`
+- `POST /api/hr/employees`
+- `GET /api/hr/employees/{id}`
+- `PATCH /api/hr/employees/{id}`
+- `POST /api/hr/employees/{id}/salary`
+- `POST /api/hr/employees/{id}/position`
+- `GET /api/hr/employees/{id}/history`
+- `POST /api/v1/tasks`
+- `GET /api/v1/tasks`
+- `PUT /api/v1/tasks/{id}`
+- `DELETE /api/v1/tasks/{id}`
+
+Usalo para:
+
+- mantener estructura organizacional
+- administrar colaboradores y cambios de posicion
+- ordenar trabajo interno no expuesto al cliente
+
+## Notificaciones y automatizaciones
+
+Endpoints principales:
+
+- `GET /api/notifications/me`
+- `GET /api/notifications/me/unread-count`
+- `PATCH /api/notifications/{id}/read`
+- `PATCH /api/notifications/read-all`
+- `POST /api/ai-support/chat`
+- `POST /api/teams-bot/messages`
+- `GET /api/changelog`
+
+Usalo para:
+
+- consumir alertas del usuario autenticado
+- disparar soporte asistido por IA
+- integrar automatizaciones internas sobre Teams
+- consultar cambios publicados desde el backend
+
+## Recomendaciones
+
+- Trata portal cliente y backoffice como superficies distintas, aunque compartan datos.
+- Usa la pestaña **API** para el contrato exacto de los endpoints administrativos.
+- Reserva AI Support y Teams Bot para integraciones internas o asistentes operativos.

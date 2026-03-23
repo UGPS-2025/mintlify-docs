@@ -1,6 +1,6 @@
 ---
 title: "Finanzas"
-description: "Facturacion, boletas, cuentas por pagar, metodos de pago y ejecuciones financieras"
+description: "Facturacion moderna y legacy, DTE, cuentas por pagar, grupos de billing y medios de pago"
 ---
 
 ## Alcance
@@ -9,25 +9,25 @@ El menu **Finanzas** agrupa billing y operaciones financieras administrativas.
 
 Incluye:
 
-- facturas
-- boletas
+- facturas legacy
+- billing moderno
+- facturacion 2.0
+- DTE y documentos tributarios
 - ejecucion de facturacion
 - cuentas por pagar
-- pagos de gastos
-- cuentas bancarias
-- tarjetas y creditos
+- descuentos y grupos de billing
 
 ## Submenus principales
 
 - Facturas
-- Boletas
+- Billing moderno
+- Facturacion 2.0
+- DTE
 - Ejecucion de facturacion
 - Cuentas por pagar
-- Cuentas bancarias
-- Metodos de pago
-- Tarjetas y creditos
+- Descuentos y grupos
 
-## Billing
+## Billing legacy
 
 Endpoints relevantes:
 
@@ -39,6 +39,54 @@ Endpoints relevantes:
 - `POST /api/v1/boleta`
 - `PUT /api/v1/boleta/{id}/status`
 
+Este bloque convive con el billing moderno de `billing/invoices`.
+
+## Billing moderno
+
+Endpoints relevantes:
+
+- `GET /api/v1/billing/invoices`
+- `POST /api/v1/billing/invoices`
+- `GET /api/v1/billing/invoices/{id}`
+- `PATCH /api/v1/billing/invoices/{id}`
+- `DELETE /api/v1/billing/invoices/{id}`
+- `GET /api/v1/billing/invoices/{id}/detail-xlsx`
+- `GET /api/v1/billing/invoices/{id}/pdf`
+- `POST /api/v1/billing/invoices/{id}/publish`
+- `POST /api/v1/billing/invoices/{id}/emit-dte`
+- `POST /api/v1/billing/invoices/{id}/register-payment`
+- `POST /api/v1/billing/invoices/batch/generate-monthly`
+- `POST /api/v1/billing/invoices/batch/publish-dtes`
+- `POST /api/v1/billing/invoices/batch/send-emails`
+
+Usalo para:
+
+- operar el ciclo completo de invoice
+- emitir o sincronizar DTE
+- generar anexos PDF/XLSX
+- automatizar procesos batch mensuales
+
+## Facturacion 2.0
+
+Endpoints relevantes:
+
+- `GET /api/v1/facturacion-2/summary`
+- `GET /api/v1/facturacion-2/uf`
+- `GET /api/v1/facturacion-2/executions`
+- `POST /api/v1/facturacion-2/create-all`
+- `GET /api/v1/facturacion-2/progress/{executionId}`
+- `POST /api/v1/facturacion-2/resume/{executionId}`
+- `POST /api/v1/facturacion-2/check-and-resume`
+- `GET /api/v1/facturacion-2/invoice/general/download`
+- `GET /api/v1/facturacion-2/invoice/all/zip`
+- `POST /api/v1/facturacion-2/invoices/batch/validate-dtes`
+
+Usalo para:
+
+- ejecutar cierres o reanudaciones masivas
+- revisar progreso de ejecuciones largas
+- validar DTE antes de publicar o reenviar
+
 ## Ejecucion de facturacion
 
 Endpoints relevantes:
@@ -49,18 +97,79 @@ Endpoints relevantes:
 - `GET /api/billing/ejecucion/{id}/error-summary`
 - `PUT /api/billing/ejecucion/errors/{errorId}/status`
 
+## DTE y documentos tributarios
+
+Endpoints relevantes:
+
+- `POST /api/v1/dte/documents`
+- `GET /api/v1/dte/documents`
+- `GET /api/v1/dte/documents/{id}`
+- `GET /api/v1/dte/documents/{id}/pdf`
+- `GET /api/v1/dte/documents/{id}/cedible`
+- `POST /api/v1/dte/documents/{id}/generate-pdf`
+- `POST /api/v1/dte/documents/{id}/credit-note`
+- `POST /api/v1/dte/documents/{id}/sync`
+- `POST /api/v1/dte/documents/{id}/send-email`
+- `GET /api/v1/payments/{dteId}`
+
+Usalo para:
+
+- revisar documentos tributarios emitidos
+- generar versiones PDF o cedibles
+- disparar credit notes y sincronizaciones
+- consultar pagos asociados a un DTE
+
 ## Cuentas por pagar
 
 Endpoints relevantes:
 
-- gastos y pagos de gastos
-- cuentas bancarias
-- metodos de pago
-- tarjetas de credito
-- creditos pendientes
+- `GET /api/v1/expense/paginated`
+- `POST /api/v1/expense/create`
+- `PUT /api/v1/expense/{id}`
+- `PATCH /api/v1/expense/{id}/mark-paid`
+- `POST /api/v1/expense/{id}/payments`
+- `GET /api/v1/supplier/all`
+- `POST /api/v1/supplier/create`
+- `GET /api/v1/credits/all`
+- `POST /api/v1/credits/create`
+- `GET /api/v1/bank-account/all`
+- `GET /api/v1/payment-method/all`
+- `GET /api/v1/credit-card/all`
+- `GET /api/v1/recurring/rules`
+- `POST /api/v1/recurring/rules`
+
+Usalo para:
+
+- registrar gastos y pagos parciales
+- administrar proveedores y creditos
+- operar reglas recurrentes
+- vincular cuentas bancarias, tarjetas y medios de pago
+
+## Grupos y descuentos
+
+Endpoints relevantes:
+
+- `GET /api/v1/billing/clients/{clientId}/groups`
+- `POST /api/v1/billing/clients/{clientId}/groups`
+- `PUT /api/v1/billing/groups/{id}`
+- `DELETE /api/v1/billing/groups/{id}`
+- `GET /api/v1/billing/clients/{clientId}/unassigned-subscriptions`
+- `POST /api/v1/billing/clients/{clientId}/groups/regenerate-drafts`
+- `GET /api/v1/descuentos/client/{clientId}`
+- `GET /api/v1/descuentos/motivos`
+- `POST /api/v1/descuentos`
+- `PUT /api/v1/descuentos/{id}`
+- `DELETE /api/v1/descuentos/{id}`
+
+Usalo para:
+
+- agrupar suscripciones a nivel de facturacion
+- regenerar drafts por cliente
+- aplicar o mantener descuentos administrados
 
 ## Recomendaciones
 
-- trata billing operativo y cuentas por pagar como dominios distintos
-- usa ejecuciones para procesos batch
-- usa boletas/facturas para documento individual
+- Trata billing operativo y cuentas por pagar como dominios distintos.
+- Usa ejecuciones o `facturacion-2` para procesos batch, no para mutaciones puntuales.
+- Prioriza `billing/invoices` y `facturacion-2` para flujos nuevos.
+- Usa la pestaña **API** para revisar estados, referencias y acciones batch menos frecuentes.

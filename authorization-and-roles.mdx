@@ -1,0 +1,110 @@
+---
+title: "Permisos y roles"
+description: "Como se protege Raul API, que endpoints son publicos y donde existe RBAC explicito"
+---
+
+## Resumen
+
+Raul tiene dos superficies de acceso distintas:
+
+- **API interna/backoffice**: usa JWT Bearer y queda protegida por defecto.
+- **Portal cliente**: usa magic link y un token propio del portal.
+
+## Modelo de seguridad actual
+
+En el backend interno existe un `JwtAuthGuard` global. Eso significa que, salvo rutas marcadas como publicas, la API requiere `Authorization: Bearer <token>`.
+
+Traduccion practica:
+
+- si una ruta interna no esta marcada como publica, asumela protegida
+- si una ruta devuelve `401`, primero revisa token o refresh
+- si devuelve `403`, la causa puede ser RBAC explicito o validacion de ownership/estado
+
+## Endpoints publicos mas importantes
+
+Backoffice/API interna:
+
+- `POST /api/auth/login`
+- `POST /api/auth/refresh`
+- `POST /api/auth/password-reset/request`
+- `POST /api/auth/password-reset/confirm`
+- `GET /api/health`
+- `GET /api/health/ready`
+
+Portal cliente:
+
+- `POST /api/portal/auth/request`
+- `POST /api/portal/auth/exchange`
+
+## Endpoints autenticados sin RBAC explicito
+
+La mayor parte de la API interna hoy exige JWT, pero no anota permisos finos con `@Roles(...)` de forma consistente en todos los modulos.
+
+Por eso, para documentacion e integraciones conviene distinguir asi:
+
+- **Autenticado**: requiere JWT valido, pero no necesariamente rol admin explicito en el controlador
+- **Admin-only explicito**: ademas del JWT, el controlador usa `RolesGuard` y `@Roles('admin')`
+
+Importante:
+
+- algunas descripciones de OpenAPI dicen "solo admin", pero no todas esas rutas estan anotadas con RBAC explicito en el codigo actual
+- si tu integracion necesita certeza absoluta, confirma el `403` esperado en la ruta concreta dentro de la pestaña **API**
+
+## RBAC explicito de admin
+
+Hoy aparece de forma clara en estas familias de endpoints:
+
+- `GET /api/health/detailed`
+- mutaciones de `POST|PUT|DELETE /api/shared-mailboxes...`
+- `POST /api/shared-mailboxes/{id}/sync`
+- historial batch y acciones sensibles de `POST|DELETE /api/v1/billing/invoices...`
+- operaciones administrativas de `POST /api/v1/dte/documents/...`
+
+Ejemplos tipicos de acciones `admin`:
+
+- publicar o eliminar invoices
+- emitir/sincronizar DTE
+- enviar emails financieros
+- registrar pagos manuales
+- correr batch jobs de billing
+- crear o asignar shared mailboxes
+
+## Portal cliente: roles funcionales
+
+El portal usa un `PortalRoleGuard` separado. La autorizacion se decide por seccion funcional.
+
+| Seccion | Roles funcionales permitidos |
+|---------|------------------------------|
+| `invoices` | `Encargado de Facturación`, `Representante Legal`, `Encargado GPS` |
+| `support` | `Encargado GPS`, `Representante Legal` |
+
+Esto aplica a:
+
+- `/api/portal/invoices/**`
+- `/api/portal/support/**`
+
+Hay una particularidad importante del backend actual:
+
+- si el usuario portal no trae `functional_roles`, el guard cae en un modo permisivo y deja pasar
+
+## Portal con acceso autenticado, pero sin seccion restringida
+
+Hoy `POST /api/portal/messages` usa `PortalJwtGuard`, pero no la restriccion de seccion `PortalRoles(...)`.
+
+Eso significa que:
+
+- requiere token portal valido
+- no comparte la misma matriz `invoices/support`
+
+## Recomendaciones para integraciones
+
+- Trata `401` como problema de autenticacion y `403` como problema de autorizacion o ownership.
+- No asumas admin para toda ruta de backoffice: diferencia entre JWT obligatorio y RBAC explicito.
+- En portal, considera que la autorizacion depende de roles funcionales del contacto, no del `rol` interno del backoffice.
+- Para operaciones sensibles de billing o shared mailboxes, valida acceso con una llamada de lectura antes de automatizar mutaciones.
+
+## Referencias
+
+- [Autenticacion](/authentication)
+- [Introduccion API](/api-reference/introduction)
+- [Errores y reintentos](/error-handling)

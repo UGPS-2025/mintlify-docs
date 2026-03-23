@@ -1,6 +1,6 @@
 ---
-title: 'Introduccion'
-description: 'Documentacion oficial de la API de Raul'
+title: "Introduccion"
+description: "Como esta organizada Raul API y por donde conviene empezar a integrarla"
 ---
 
 ## Endpoint base
@@ -11,48 +11,66 @@ La API productiva disponible para consumo esta en:
 - **Health check**: `https://api.raul.ugps.io/api/health`
 - **OpenAPI JSON**: `https://api.raul.ugps.io/api/openapi.json`
 
+## Como leer esta documentacion
+
+Raul combina dos capas:
+
+- **Guia**: explica dominios, flujos, decisiones de integracion y contexto de negocio
+- **API**: muestra el contrato exacto generado desde OpenAPI
+
+Regla simple:
+
+- si buscas un endpoint puntual, entra a **API**
+- si buscas entender que modulo o secuencia usar, empieza por **Guia**
+
 ## Autenticacion
 
-Los endpoints protegidos usan autenticacion `Bearer` con token JWT. La
-referencia de API indica que operaciones requieren autenticacion y los esquemas
-de request y response asociados.
+La API interna usa autenticacion `Bearer` con JWT. El portal cliente usa un flujo separado de magic link y token portal.
 
-## Fuente de referencia
+Para detalles:
 
-La pestaña de **API** renderiza automaticamente los endpoints definidos en el
-esquema OpenAPI expuesto por el backend. Este documento no replica manualmente
-los contratos; consume la definicion publicada por la API.
+- [Autenticacion](/authentication)
+- [Permisos y roles](/authorization-and-roles)
 
-## Modulos disponibles
+## Grupos funcionales actuales
 
-| Modulo | Descripcion |
-|--------|-------------|
-| **Auth** | Login, refresh, logout, gestion de usuarios, avatar, password reset |
-| **Clients** | CRUD de clientes, paginacion, logo |
-| **Client Father** | Clientes padre con suscripciones |
-| **Client Addresses** | Direcciones agrupadas por ciudad |
-| **Contact** | Contactos, leads, functional roles, merge, fotos |
-| **Vehicle / Asset** | Vehiculos, filtros, tipos de vehiculo |
-| **Activities** | Timeline por cliente/contacto/visita, archivos, tipos |
-| **GPS Details** | Equipos GPS con paginacion offset/cursor, IMEI, resumen |
-| **GPS Catalogos** | Modelos, plataformas, inventario, marcas, categorias, estados, historial |
-| **Subscriptions** | Suscripciones, planes, estados, monedas, transferencias |
-| **Catalogos** | Rubro, ciudad, tipo de contrato, cargo, comunicacion, lifecycle |
+| Grupo Mintlify | Que cubre |
+|----------------|-----------|
+| **Acceso** | login, refresh, logout, usuarios y recuperacion |
+| **Clientes** | clientes, clientes padre, direcciones, contactos y vehiculos |
+| **Operaciones** | GPS, suscripciones, actividades, visitas, tecnicos, transfers y tareas |
+| **Comunicaciones** | omnichannel, inbox, shared mailboxes, tags, spam y email sync |
+| **Ventas** | quotes, pipeline, outreach, equipment sales, shipment orders y catalogos comerciales |
+| **Finanzas** | invoices modernas, billing legacy, DTE, cuentas por pagar y pagos |
+| **Diagnostico** | health, consumo, Emnify, Atlas, Flespi, chips y troubleshooting |
+| **Configuraciones** | catalogos maestros, tipos, lifecycles y parametros base |
+| **Plataforma** | portal cliente, templates, RRHH, notificaciones, AI support y teams bot |
 
-## Rutas recomendadas
+## Reglas practicas de integracion
 
 - Prefiere rutas RESTful cuando exista una alternativa legacy equivalente.
-- En modulos con gran volumen de datos, prefiere endpoints paginados o cursor-based.
-- Algunos endpoints tienen alias (ej: `/gps_details/...` y `/gps/...`); ambos son equivalentes.
-- Usa esta documentacion junto con la guia de consumo para IA cuando el cliente
-  sea un agente o automatizacion.
+- En modulos con gran volumen de datos, prefiere paginacion o cursor.
+- Algunos recursos tienen alias legacy y modernos; confirma la opcion recomendada en la pestaña **API**.
+- No asumas que toda ruta autenticada es `admin-only`: revisa [Permisos y roles](/authorization-and-roles).
+- Para agentes o automatizaciones, combina esta pagina con [Guia para IA](/ai-consumption).
+
+## Punto de partida recomendado
+
+Si estas integrando desde cero:
+
+1. autentica con `/api/auth/login`
+2. valida la sesion con `/api/auth/users/me`
+3. identifica el dominio funcional correcto en Mintlify
+4. consume el endpoint exacto desde la pestaña **API**
+
+## Enlaces rapidos
 
 <Card
   title="Abrir JSON OpenAPI"
   icon="file-json"
   href="https://api.raul.ugps.io/api/openapi.json"
 >
-  Ver definicion completa de endpoints y esquemas
+  Ver definicion completa de endpoints y schemas
 </Card>
 
 <Card
@@ -64,9 +82,9 @@ los contratos; consume la definicion publicada por la API.
 </Card>
 
 <Card
-  title="Guia para IA"
-  icon="sparkles"
-  href="/ai-consumption"
+  title="Permisos y roles"
+  icon="shield-check"
+  href="/authorization-and-roles"
 >
-  Criterios para agentes, automatizaciones y consumo programatico
+  Revisar JWT global, RBAC admin y roles funcionales del portal
 </Card>

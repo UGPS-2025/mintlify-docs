@@ -1,6 +1,6 @@
 ---
 title: "Operaciones"
-description: "Modulo operativo: suscripciones, GPS, visitas, actividades, soporte y ejecucion tecnica"
+description: "Modulo operativo: suscripciones, GPS, visitas, actividades, transfers, tecnicos y ejecucion tecnica"
 ---
 
 ## Alcance
@@ -13,8 +13,9 @@ Incluye principalmente:
 - GPS y dispositivos
 - visitas
 - actividades
-- soporte o tickets
-- movimientos tecnicos asociados
+- tecnicos y soporte
+- transfers y tareas internas
+- SIMs y conectividad
 
 ## Submenus principales
 
@@ -24,6 +25,9 @@ Incluye principalmente:
 - Actividades
 - Visitas
 - Tecnicos y soporte
+- Transfers
+- Tareas internas
+- Inactive devices
 - SIMs y conectividad
 
 ## Suscripciones
@@ -60,13 +64,70 @@ Endpoints clave:
 
 ## Visitas
 
-Este dominio vive en el backend aunque no toda su explicacion editorial estaba publicada.
+Endpoints clave:
+
+- `GET /api/v1/visit_detail`
+- `POST /api/v1/visit_detail`
+- `GET /api/v1/visit_detail/paginated`
+- `GET /api/v1/visit_detail/summary`
+- `GET /api/v1/visit_detail/by-technicians`
+- `GET /api/v1/visit_detail/technicians`
+- `GET /api/v1/visit_detail/client/{clientId}`
+- `GET /api/v1/visit_detail/subscription/{subscriptionDetailId}`
+- `GET /api/v1/visit_detail/client/{clientId}/with-cost`
+- `GET /api/v1/visit_detail/images/{visitDetailId}`
+- `POST /api/v1/visit_detail/upload/{visitDetailId}`
+- `GET /api/v1/visit_detail/{id}/pdf`
+- `GET /api/v1/visit_detail/{id}`
+- `PUT /api/v1/visit_detail/{id}`
+- `DELETE /api/v1/visit_detail/{id}`
 
 Usalo para:
 
 - agenda tecnica
 - ejecucion de visitas
 - relacion entre actividad, tecnico, GPS y cliente
+- generar o descargar respaldos de visita
+
+## Tecnicos y transfers
+
+Endpoints clave:
+
+- `GET /api/v1/technician/all/paginated`
+- `GET /api/v1/technician/all`
+- `GET /api/v1/technician/get/{id}`
+- `POST /api/v1/technician/create`
+- `PUT /api/v1/technician/update/{id}`
+- `DELETE /api/v1/technician/delete/{id}`
+- `POST /api/v1/transfers`
+- `GET /api/v1/transfers`
+- `GET /api/v1/transfers/{id}`
+- `PUT /api/v1/transfers/{id}/withdrawal`
+- `PUT /api/v1/transfers/{id}/installation`
+- `DELETE /api/v1/transfers/{id}/cancel`
+
+Usalo para:
+
+- administrar cuadrillas o tecnicos
+- mover equipos entre retiro e instalacion
+- mantener trazabilidad de transferencias tecnicas
+
+## Tareas e inactive devices
+
+Endpoints clave:
+
+- `POST /api/v1/tasks`
+- `GET /api/v1/tasks`
+- `PUT /api/v1/tasks/{id}`
+- `DELETE /api/v1/tasks/{id}`
+- `GET /api/v1/inactive-devices`
+- `POST /api/v1/inactive-devices/sync`
+
+Usalo para:
+
+- coordinar pendientes operativos internos
+- detectar brechas entre inventario activo e inactivo
+- sincronizar estados tecnicos antes de corregir datos manualmente
 
 ## SIMs y conectividad
 
@@ -82,3 +143,4 @@ Parte del backend operativo tambien expone:
 - Usa paginacion o cursor en listados grandes.
 - Separa estado comercial de estado operativo.
 - Para trazabilidad temporal usa Activities y Visits, no solo Subscription Details.
+- Usa Transfers para el ciclo tecnico y no como reemplazo de cambio comercial de cliente.

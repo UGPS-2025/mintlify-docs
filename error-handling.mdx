@@ -1,16 +1,20 @@
 ---
 title: "Errores y reintentos"
-description: "Como interpretar respuestas fallidas y cuando reintentar operaciones"
+description: "Como interpretar respuestas fallidas, cuando reintentar y que casos exigen verificacion manual"
 ---
 
 ## Objetivo
 
-No todos los errores deben tratarse igual. Esta guia define que errores reintentar y cuales corregir en origen.
+No todos los errores deben tratarse igual. Esta guia separa:
+
+- errores que conviene corregir en origen
+- errores que admiten retry controlado
+- errores donde primero debes verificar estado antes de repetir
 
 ## Regla general
 
-- `4xx`: el problema suele estar en request, permisos o estado de negocio
-- `5xx`: el problema suele estar en el backend o dependencia externa
+- `4xx`: el problema suele estar en request, permisos, ownership o estado de negocio
+- `5xx`: el problema suele estar en el backend o en una dependencia externa
 
 ## Tabla rapida
 
@@ -18,10 +22,10 @@ No todos los errores deben tratarse igual. Esta guia define que errores reintent
 |------|-------------|------------|--------------------|
 | `400` | Payload invalido | No | Corregir request |
 | `401` | No autenticado o token expirado | Una vez | Intentar refresh y repetir |
-| `403` | Sin permisos o recurso bloqueado | No | Revisar rol, estado o policy |
-| `404` | Recurso inexistente | No | Validar ID o dependencia previa |
+| `403` | Sin permisos, ownership o rol | No | Revisar acceso o relacion con el recurso |
+| `404` | Recurso inexistente | No | Validar ID, dependencia previa o ambiente |
 | `409` | Conflicto de negocio | No | Resolver duplicidad o estado |
-| `422` | Regla de validacion | No | Corregir datos |
+| `422` | Regla de validacion o transicion invalida | No | Corregir payload o secuencia |
 | `429` | Limite de uso | Si | Backoff exponencial |
 | `500` | Error interno | Si | Retry con backoff y observabilidad |
 | `502/503/504` | Degradacion temporal | Si | Retry controlado |
@@ -44,6 +48,25 @@ No reintentes automaticamente:
 - `404`
 - `409`
 - `422`
+
+## Operaciones que NO deberias repetir a ciegas
+
+Aunque recibas un error transitorio, verifica primero si la accion ya produjo efectos cuando la operacion:
+
+- crea recursos comerciales o financieros
+- cambia estado de invoices o DTE
+- registra pagos
+- emite emails o WhatsApp
+- sube archivos o evidencia de visitas
+
+Ejemplos donde conviene leer el estado antes de repetir:
+
+- `POST /api/v1/billing/invoices/{id}/publish`
+- `POST /api/v1/billing/invoices/{id}/emit-dte`
+- `POST /api/v1/billing/invoices/{id}/send-email`
+- `POST /api/v1/billing/invoices/{id}/register-payment`
+- `POST /api/omnichannel/send`
+- `POST /api/v1/visit_detail/upload/{visitDetailId}`
 
 ## Backoff recomendado
 
@@ -76,25 +99,72 @@ Ejemplo tipico:
 }
 ```
 
-## Casos frecuentes
+## Casos frecuentes por dominio
 
-### `401` tras login exitoso
+### Auth y sesion
+
+`401` suele indicar:
 
 - token vencido
 - token mal formateado
 - falta prefijo `Bearer `
 
-### `409` al crear
+Accion:
 
-- cliente ya existe por RUT
-- recurso duplicado
-- regla de unicidad incumplida
+- intenta `POST /api/auth/refresh` una sola vez
+- si falla, exige login nuevo
 
-### `404` en rutas encadenadas
+### Portal cliente
 
-- se creo el recurso padre en otro ambiente
-- se uso una ruta legacy con ID distinto al esperado
-- el recurso fue transferido o eliminado
+`403` puede significar:
+
+- el contacto no tiene rol funcional para `invoices` o `support`
+- el recurso no pertenece al `clientId` del token portal
+
+Accion:
+
+- valida el rol funcional del contacto
+- confirma que el documento o ticket pertenece al cliente correcto
+
+### Billing y DTE
+
+`409` o `422` suelen aparecer cuando:
+
+- intentas publicar una invoice fuera de secuencia
+- intentas emitir DTE sin precondiciones cumplidas
+- registras un pago con estado o monto incompatible
+
+Accion:
+
+- consulta la invoice actual
+- revisa estado, referencias y pagos registrados
+- solo repite la mutacion si el estado sigue intacto
+
+### Omnichannel
+
+Los fallos mas delicados son:
+
+- mensajes duplicados por retry sin control
+- assignment/reply sobre threads cerrados o reasignados
+- problemas de Microsoft/WhatsApp que terminan como `5xx` o estados externos inconsistentes
+
+Accion:
+
+- reconsulta thread y mensajes antes de reenviar
+- usa retries solo cuando el backend o el canal fallen de forma transitoria
+
+### Visitas y archivos
+
+Errores frecuentes:
+
+- `404` por `visitDetailId` o `imageId` inexistente
+- `400` por archivo invalido
+- timeouts o errores de upload
+
+Accion:
+
+- valida existencia de la visita antes del upload
+- si el upload falla, revisa si la imagen ya quedo asociada antes de reintentar
 
 ## Observabilidad minima
 
@@ -106,9 +176,11 @@ Para cualquier integracion registra:
 - correlation id si existe
 - mensaje de error
 - payload resumido sin secretos
+- identificador funcional del recurso si existe: `clientId`, `invoiceId`, `threadId`, `visitDetailId`
 
 ## Referencias
 
 - [Autenticacion](/authentication)
+- [Permisos y roles](/authorization-and-roles)
 - [Convenciones de la API](/api-conventions)
 - [Introduccion API](/api-reference/introduction)

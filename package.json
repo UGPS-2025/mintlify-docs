@@ -4,8 +4,11 @@
   "type": "module",
   "scripts": {
     "openapi:generate": "node scripts/generate-openapi.mjs",
+    "openapi:assert-clean": "git diff --exit-code -- generated/openapi.json generated/specs",
+    "openapi:check": "npm run openapi:generate && npm run openapi:assert-clean",
     "docs:validate": "npx mint validate",
     "docs:broken-links": "npx mint broken-links",
+    "docs:ci": "npm run openapi:check && npm run docs:validate && npm run docs:broken-links",
     "docs:dev": "npx mint dev",
     "docs:dev:lts": "npx -y -p node@20 -p mint mint dev"
   }

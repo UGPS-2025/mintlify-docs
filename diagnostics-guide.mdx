@@ -1,6 +1,6 @@
 ---
 title: "Diagnostico"
-description: "Health checks, conectividad, SIMs, webhooks y estado tecnico del sistema"
+description: "Health checks, conectividad, SIMs, Atlas, Flespi, webhooks y estado tecnico del sistema"
 ---
 
 ## Alcance
@@ -15,6 +15,7 @@ Incluye:
 - SIM management
 - estado de tokens o canales
 - consumo y cache
+- integraciones Atlas, Flespi y Emnify
 
 ## Submenus principales
 
@@ -24,6 +25,8 @@ Incluye:
 - Webhooks
 - Estado de canales
 - Consumo y cache
+- Atlas
+- Flespi
 
 ## Endpoints relevantes
 
@@ -38,6 +41,43 @@ Incluye:
 - `GET /api/omnichannel/failed-webhooks`
 - `POST /api/omnichannel/failed-webhooks/{id}/retry`
 
+## Atlas y trazabilidad externa
+
+Endpoints relevantes:
+
+- `GET /api/v1/atlas/clients`
+- `POST /api/v1/atlas/trackers`
+- `GET /api/v1/atlas/trackers/{atlas_device_id}/location`
+- `GET /api/v1/atlas/trackers/imei/{imei}`
+
+Usalo para:
+
+- validar provisionamiento en Atlas
+- cruzar IMEI con tracker externo
+- revisar ultima ubicacion reportada
+
+## Flespi, endpoint management y catalogo de chips
+
+Endpoints relevantes:
+
+- `GET /api/v1/flespi/device/imei/{imei}`
+- `GET /api/v1/flespi/device/{flespiId}/telemetry`
+- `GET /api/v1/flespi/device/{flespiId}/position`
+- `GET /api/v1/flespi/device/{flespiId}/messages`
+- `GET /api/v1/flespi/device/{flespiId}/logs`
+- `POST /api/v1/catalog/chips/search`
+- `GET /api/v1/catalog/chips/phone/{phone_number}`
+- `GET /api/v1/emnify/endpoint/{endpointId}`
+- `GET /api/v1/emnify/endpoint/{endpointId}/stats`
+- `PATCH /api/v1/emnify/endpoint/{endpointId}/status`
+
+Usalo para:
+
+- diagnosticar telemetria y conectividad
+- revisar configuracion de dispositivos
+- auditar chips y endpoints Emnify
+- investigar incidentes de integracion GPS/SIM
+
 ## Cuando usarlo
 
 - incidentes productivos
@@ -50,3 +90,4 @@ Incluye:
 - usa esta seccion para diagnostico, no para operacion normal
 - si el problema es de inbox, revisa tambien Comunicaciones
 - si el problema es de GPS/SIM, cruza con Operaciones
+- si necesitas detalle contractual de un modulo, usa la pestaña **API**

@@ -1,0 +1,68 @@
+---
+title: "Cobertura de la documentacion"
+description: "Que cubre Mintlify hoy, como leer la referencia y donde todavia conviene profundizar"
+---
+
+## Fuente de verdad
+
+La pestaña **API** es la referencia canonica de endpoints. Se genera desde `generated/openapi.json`, que a su vez replica el OpenAPI servido por Raul.
+
+Si necesitas un contrato exacto de request, response, auth o path params, usa la pestaña **API** antes que una guia editorial.
+
+## Cobertura actual en Mintlify
+
+Mintlify ya organiza la referencia tecnica por dominios:
+
+- Acceso
+- Clientes
+- Operaciones
+- Comunicaciones
+- Ventas
+- Finanzas
+- Diagnostico
+- Configuraciones
+- Plataforma
+
+La idea es que toda ruta presente en el OpenAPI quede asignada a una de esas vistas. Si una ruta nueva no entra en ningun dominio, la generacion de specs debe fallar para que la brecha se detecte de inmediato.
+
+## Guardrails implementados
+
+Ademas de la cobertura editorial, el repo ya puede protegerse mejor contra drift:
+
+- CI para regenerar OpenAPI y validar Mintlify
+- chequeo de drift entre artefactos generados y lo que esta committed
+- workflow programado para detectar cambios del OpenAPI remoto aunque el repo de docs no haya cambiado
+- validacion de build y broken links en pipeline
+
+## Guias editoriales publicadas
+
+Hoy existen guias de alto nivel para:
+
+- autenticacion y convenciones globales
+- clientes y contactos
+- operaciones, GPS y suscripciones
+- comunicaciones y omnichannel
+- ventas y cotizaciones
+- finanzas
+- diagnostico
+- configuraciones
+- plataforma y backoffice
+
+Estas guias priorizan contexto de negocio, flujos y puntos de entrada. No buscan duplicar endpoint por endpoint lo que ya entrega OpenAPI.
+
+## Donde todavia conviene profundizar
+
+Las areas que ya estan cubiertas por OpenAPI pero aun admiten mas documentacion narrativa son:
+
+- facturacion moderna, DTE y procesos batch complejos
+- visitas tecnicas, costs, imagenes y reportes PDF
+- portal cliente y casos de soporte self-service
+- RRHH, templates y herramientas internas de backoffice
+- integraciones tecnicas como Atlas, Flespi y Emnify
+- webhooks e integraciones internas de automatizacion
+
+## Recomendacion practica
+
+- Si estas integrando desde cero, empieza por [Autenticacion](/authentication) y [Convenciones de la API](/api-conventions).
+- Si ya conoces el dominio y buscas una ruta puntual, entra directo a la pestaña **API**.
+- Si estas levantando una superficie funcional completa, combina la guia del dominio con la referencia OpenAPI del mismo grupo.

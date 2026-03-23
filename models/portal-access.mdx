@@ -1,0 +1,15 @@
+---
+title: "Schema: ExchangePortalTokenDto"
+description: "Payload para intercambiar magic link por token del portal cliente"
+openapi-schema: "generated/specs/platform.json ExchangePortalTokenDto"
+---
+
+## Uso principal
+
+Este schema aparece en el onboarding del portal cliente.
+
+Usalo para:
+
+- consumir `POST /api/portal/auth/exchange`
+- convertir un magic link o token temporal en sesion portal
+- separar el acceso portal del JWT interno de backoffice

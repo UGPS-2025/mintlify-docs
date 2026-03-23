@@ -997,6 +997,526 @@
         ]
       }
     },
+    "/api/v1/atlas/clients": {
+      "get": {
+        "description": "Get all active clients/companies from Atlas platform",
+        "operationId": "AtlasController_getClients",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of clients",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtlasClientListResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get Atlas clients",
+        "tags": [
+          "Atlas"
+        ]
+      }
+    },
+    "/api/v1/atlas/trackers": {
+      "post": {
+        "description": "Create a new GPS tracker in Atlas platform",
+        "operationId": "AtlasController_createTracker",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTrackerRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tracker creation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTrackerResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create tracker in Atlas",
+        "tags": [
+          "Atlas"
+        ]
+      }
+    },
+    "/api/v1/atlas/trackers/{atlas_device_id}/location": {
+      "get": {
+        "description": "Check if GPS tracker has reported location to Atlas",
+        "operationId": "AtlasController_verifyLocation",
+        "parameters": [
+          {
+            "name": "atlas_device_id",
+            "required": true,
+            "in": "path",
+            "description": "Atlas device ID (MongoDB ObjectId)",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Location status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackerLocationResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid device ID"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Verify GPS location",
+        "tags": [
+          "Atlas"
+        ]
+      }
+    },
+    "/api/v1/atlas/trackers/imei/{imei}": {
+      "get": {
+        "description": "Find tracker in Atlas by IMEI number",
+        "operationId": "AtlasController_getTrackerByImei",
+        "parameters": [
+          {
+            "name": "imei",
+            "required": true,
+            "in": "path",
+            "description": "15-digit IMEI",
+            "schema": {
+              "example": "863719068123448",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tracker data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackerResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid IMEI format"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tracker not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get tracker by IMEI",
+        "tags": [
+          "Atlas"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/imei/{imei}": {
+      "get": {
+        "description": "Operacion: Find device by IMEI.",
+        "operationId": "FlespiController_findDeviceByImei",
+        "parameters": [
+          {
+            "name": "imei",
+            "required": true,
+            "in": "path",
+            "description": "Device IMEI",
+            "schema": {
+              "example": "123456789012345",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device found"
+          },
+          "404": {
+            "description": "Device not found"
+          }
+        },
+        "summary": "Find device by IMEI",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/telemetry": {
+      "get": {
+        "description": "Operacion: Get device telemetry data.",
+        "operationId": "FlespiController_getDeviceTelemetry",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Telemetry data retrieved"
+          },
+          "404": {
+            "description": "Telemetry not found"
+          }
+        },
+        "summary": "Get device telemetry data",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/position": {
+      "get": {
+        "description": "Operacion: Get device position.",
+        "operationId": "FlespiController_getDevicePosition",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Position retrieved"
+          },
+          "404": {
+            "description": "Position not found"
+          }
+        },
+        "summary": "Get device position",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/messages": {
+      "get": {
+        "description": "Operacion: Get device messages.",
+        "operationId": "FlespiController_getDeviceMessages",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Number of messages to retrieve",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved"
+          }
+        },
+        "summary": "Get device messages",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/settings": {
+      "get": {
+        "description": "Operacion: Get device settings.",
+        "operationId": "FlespiController_getDeviceSettings",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Settings retrieved"
+          },
+          "404": {
+            "description": "Settings not found"
+          }
+        },
+        "summary": "Get device settings",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/settings/{settingName}": {
+      "put": {
+        "description": "Operacion: Update device setting.",
+        "operationId": "FlespiController_updateDeviceSetting",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "settingName",
+            "required": true,
+            "in": "path",
+            "description": "Setting name",
+            "schema": {
+              "example": "interval",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeviceSettingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Setting updated successfully"
+          },
+          "500": {
+            "description": "Failed to update setting"
+          }
+        },
+        "summary": "Update device setting",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/configuration": {
+      "put": {
+        "description": "Operacion: Update device configuration.",
+        "operationId": "FlespiController_updateDeviceConfig",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeviceConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Configuration updated successfully"
+          },
+          "500": {
+            "description": "Failed to update configuration"
+          }
+        },
+        "summary": "Update device configuration",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/commands": {
+      "post": {
+        "description": "Operacion: Send command to device.",
+        "operationId": "FlespiController_sendCommand",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendCommandDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Command sent successfully"
+          },
+          "500": {
+            "description": "Failed to send command"
+          }
+        },
+        "summary": "Send command to device",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/logs": {
+      "get": {
+        "description": "Operacion: Get device logs.",
+        "operationId": "FlespiController_getDeviceLogs",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Number of log entries to retrieve",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs retrieved"
+          }
+        },
+        "summary": "Get device logs",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
+    "/api/v1/flespi/device/{flespiId}/commands-result": {
+      "get": {
+        "description": "Operacion: Get device command results.",
+        "operationId": "FlespiController_getCommandResults",
+        "parameters": [
+          {
+            "name": "flespiId",
+            "required": true,
+            "in": "path",
+            "description": "Flespi device ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Command results retrieved"
+          }
+        },
+        "summary": "Get device command results",
+        "tags": [
+          "flespi"
+        ]
+      }
+    },
     "/api/v1/sim_operator/all": {
       "get": {
         "description": "Operacion: Obtener todos los operadores SIM con paginación.",
@@ -1583,6 +2103,27 @@
           }
         ],
         "summary": "Obtener SIMs enriquecidos con cursor pagination (optimizado para grandes datasets)",
+        "tags": [
+          "SIMs"
+        ]
+      }
+    },
+    "/api/v1/chip-catalog/all": {
+      "get": {
+        "description": "Operacion: Obtener catálogo de chips.",
+        "operationId": "SimsController_getAllChips",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener catálogo de chips",
         "tags": [
           "SIMs"
         ]

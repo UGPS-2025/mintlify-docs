@@ -1,0 +1,46 @@
+name: OpenAPI Drift Check
+
+on:
+  schedule:
+    - cron: "0 9 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Regenerate OpenAPI artifacts
+        run: npm run openapi:generate
+
+      - name: Validate Mintlify build
+        run: npm run docs:validate
+
+      - name: Detect drift against committed artifacts
+        id: drift
+        run: |
+          if git diff --quiet -- generated/openapi.json generated/specs; then
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "drift=true" >> "$GITHUB_OUTPUT"
+          git diff -- generated/openapi.json generated/specs > openapi-drift.diff
+          echo "::error::OpenAPI drift detected. Regenerate and commit generated/openapi.json and generated/specs."
+          exit 1
+
+      - name: Upload drift diff
+        if: failure() && steps.drift.outputs.drift == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-drift-diff
+          path: openapi-drift.diff

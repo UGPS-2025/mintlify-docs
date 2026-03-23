@@ -18,14 +18,33 @@
             "pages": [
               "index",
               "modules-overview",
-              "models-overview",
+              "documentation-coverage",
               "authentication",
+              "authorization-and-roles",
               "api-conventions",
               "error-handling",
               "common-workflows",
               "changelog",
               "api-reference/index",
               "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Modelos",
+            "pages": [
+              "models-overview",
+              "models/user",
+              "models/client",
+              "models/gps-details",
+              "models/subscription-details",
+              "models/quote",
+              "models/invoice",
+              "models/invoice-detail",
+              "models/visit-detail",
+              "models/template",
+              "models/employee",
+              "models/task",
+              "models/portal-access"
             ]
           },
           {
@@ -80,6 +99,12 @@
             "pages": [
               "settings-guide"
             ]
+          },
+          {
+            "group": "Plataforma",
+            "pages": [
+              "platform-guide"
+            ]
           }
         ]
       },
@@ -117,6 +142,10 @@
           {
             "group": "Configuraciones",
             "openapi": "generated/specs/settings.json"
+          },
+          {
+            "group": "Plataforma",
+            "openapi": "generated/specs/platform.json"
           }
         ]
       }

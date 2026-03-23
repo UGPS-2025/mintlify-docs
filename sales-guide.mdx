@@ -1,6 +1,6 @@
 ---
 title: "Ventas y cotizaciones"
-description: "Endpoints clave para cotizaciones, pipeline, dispositivos, ventas de equipamiento y funciones de IA comercial"
+description: "Endpoints clave para quotes, pipeline, catalogos comerciales, despachos y funciones de IA comercial"
 ---
 
 ## Alcance
@@ -12,8 +12,9 @@ Incluye:
 - cotizaciones
 - pipeline comercial
 - catalogo de dispositivos cotizables
+- catalogos comerciales auxiliares
 - ventas de equipamiento
-- envios
+- envios y shipment orders
 - funciones de IA y outreach
 
 ## Submenus principales
@@ -25,6 +26,7 @@ Incluye:
 - Outreach IA
 - Equipment Sales
 - Shipments
+- Catalogos comerciales
 
 ## Quotes
 
@@ -153,24 +155,59 @@ Usalo para:
 - relacionarlas con cliente, suscripcion o visita
 - mantener trazabilidad de montos y modalidad de pago
 
-## Shipments
+## Shipments y shipment orders
 
 Endpoints principales:
 
 - `POST /api/v1/shipments/quote`
+- `POST /api/v1/shipment-orders`
+- `GET /api/v1/shipment-orders`
+- `GET /api/v1/shipment-orders/stats`
+- `GET /api/v1/shipment-orders/by-ticket/{ticketId}`
+- `GET /api/v1/shipment-orders/{id}`
+- `PATCH /api/v1/shipment-orders/{id}/status`
+- `PATCH /api/v1/shipment-orders/{id}/cancel`
 
 Usalo para:
 
 - cotizar despacho o logistica asociada a la venta
+- operar ordenes reales de despacho postventa o postcierre
+
+## Catalogos comerciales
+
+Endpoints principales:
+
+- `GET /api/v1/sellers/all`
+- `POST /api/v1/sellers/create`
+- `PUT /api/v1/sellers/update/{id}`
+- `GET /api/v1/currency/all`
+- `POST /api/v1/currency/create`
+- `GET /api/v1/plans`
+- `POST /api/v1/plans`
+- `GET /api/v1/plans/categories`
+- `GET /api/v1/plan-categories`
+- `POST /api/v1/plan-categories`
+- `GET /api/v1/accessory/all`
+- `GET /api/v1/accessory/compatible/{gpsId}`
+- `POST /api/v1/accessory/create`
+- `GET /api/product-knowledge`
+- `POST /api/product-knowledge`
+- `PUT /api/product-knowledge/{id}`
+
+Usalo para:
+
+- mantener vendedores y parametros del equipo comercial
+- definir moneda, planes y categorias previas a una propuesta
+- enriquecer catalogos con accesorios y knowledge reutilizable
 
 ## Flujo recomendado
 
-1. Definir dispositivos o catalogo comercial
-2. Crear cotizacion
-3. Calcular montos y validar pipeline
-4. Generar PDF o email
-5. Ejecutar outreach si la oportunidad lo requiere
-6. Registrar venta de equipamiento si la cotizacion se concreta
+1. Definir catalogos comerciales, dispositivos y knowledge reusable.
+2. Crear cotizacion.
+3. Calcular montos y validar pipeline.
+4. Generar PDF o email.
+5. Ejecutar outreach si la oportunidad lo requiere.
+6. Registrar venta de equipamiento y despacho si la cotizacion se concreta.
 
 ## Recomendaciones
 
@@ -178,3 +215,4 @@ Usalo para:
 - Usa `pipeline stages` para el estado comercial y no mezcles ese estado con billing.
 - Usa `equipment sales` solo cuando la venta ya exista como hecho comercial.
 - Separa claramente IA de contenido comercial y envio real al cliente.
+- Usa `shipment-orders` para la operacion real del despacho y `shipments/quote` solo para estimacion.

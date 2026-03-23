@@ -7090,6 +7090,566 @@
         ]
       }
     },
+    "/api/v1/transfers": {
+      "post": {
+        "description": "Operacion: Create a new transfer with 2 visits.",
+        "operationId": "TransferController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transfer created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new transfer with 2 visits",
+        "tags": [
+          "Transfers"
+        ]
+      },
+      "get": {
+        "description": "Operacion: Get transfers with pagination.",
+        "operationId": "TransferController_findPaginated",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "client_id",
+            "required": false,
+            "in": "query",
+            "description": "Filter by client ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Filter from date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "required": false,
+            "in": "query",
+            "description": "Filter to date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of transfers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTransferResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get transfers with pagination",
+        "tags": [
+          "Transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}": {
+      "get": {
+        "description": "Operacion: Get transfer by ID.",
+        "operationId": "TransferController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transfer not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get transfer by ID",
+        "tags": [
+          "Transfers"
+        ]
+      },
+      "delete": {
+        "description": "Operacion: Delete a transfer and associated visits.",
+        "operationId": "TransferController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferMessageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Delete a transfer and associated visits",
+        "tags": [
+          "Transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}/withdrawal": {
+      "put": {
+        "description": "Operacion: Update withdrawal visit of a transfer.",
+        "operationId": "TransferController_updateWithdrawal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTransferVisitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transfer updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transfer not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update withdrawal visit of a transfer",
+        "tags": [
+          "Transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}/installation": {
+      "put": {
+        "description": "Operacion: Update installation visit of a transfer.",
+        "operationId": "TransferController_updateInstallation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTransferVisitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transfer updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transfer not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update installation visit of a transfer",
+        "tags": [
+          "Transfers"
+        ]
+      }
+    },
+    "/api/v1/transfers/{id}/cancel": {
+      "delete": {
+        "description": "Operacion: Cancel a transfer (contextual).",
+        "operationId": "TransferController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer cancelled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferMessageResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Cancel a transfer (contextual)",
+        "tags": [
+          "Transfers"
+        ]
+      }
+    },
+    "/api/v1/tasks": {
+      "post": {
+        "description": "Operacion: Create a new task.",
+        "operationId": "TaskController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a new task",
+        "tags": [
+          "Tasks"
+        ]
+      },
+      "get": {
+        "description": "Operacion: Get tasks with filters.",
+        "operationId": "TaskController_findAll",
+        "parameters": [
+          {
+            "name": "client_id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contact_id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "assigned_to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activity_type_id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get tasks with filters",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
+    "/api/v1/tasks/{id}": {
+      "put": {
+        "description": "Operacion: Update a task.",
+        "operationId": "TaskController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update a task",
+        "tags": [
+          "Tasks"
+        ]
+      },
+      "delete": {
+        "description": "Operacion: Delete a task.",
+        "operationId": "TaskController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task deleted"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Delete a task",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
     "/api/v1/tickets/stats": {
       "get": {
         "description": "Operacion: Get ticket statistics.",
@@ -7672,6 +8232,54 @@
         "summary": "Consultar vehículo por patente (revisión técnica)",
         "tags": [
           "Patentes"
+        ]
+      }
+    },
+    "/api/v1/inactive-devices": {
+      "get": {
+        "description": "Operacion: Get inactive devices grouped by client.",
+        "operationId": "InactiveDevicesController_getInactiveDevices",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Inactive devices list"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get inactive devices grouped by client",
+        "tags": [
+          "Inactive Devices"
+        ]
+      }
+    },
+    "/api/v1/inactive-devices/sync": {
+      "post": {
+        "description": "Trigger manual sync of device connections from all platforms",
+        "operationId": "InactiveDevicesController_syncDeviceConnections",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Sync result with counters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Trigger manual sync of device connections from all platforms",
+        "tags": [
+          "Inactive Devices"
         ]
       }
     }

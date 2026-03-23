@@ -7,6 +7,8 @@ description: "Como iniciar sesion, usar Bearer JWT, renovar tokens y manejar err
 
 Los endpoints protegidos de Raul API usan autenticacion `Bearer` con JWT.
 
+Para permisos y diferencias entre backoffice vs portal, revisa tambien [Permisos y roles](/authorization-and-roles).
+
 Flujo recomendado:
 
 1. `POST /api/auth/login`
@@ -18,6 +20,13 @@ Flujo recomendado:
 ## Base URL
 
 - `https://api.raul.ugps.io`
+
+## Dos superficies de acceso
+
+- **Backoffice/API interna**: JWT Bearer tradicional.
+- **Portal cliente**: magic link + token propio del portal.
+
+En esta pagina se documenta el acceso del backoffice. El portal vive en [Plataforma y backoffice](/platform-guide) y [Permisos y roles](/authorization-and-roles).
 
 ## Login
 

@@ -36,12 +36,30 @@ servido por el backend productivo.
 </Card>
 
 <Card
+  title="Permisos"
+  icon="shield-check"
+  href="/authorization-and-roles"
+  horizontal
+>
+  Revisa JWT global, RBAC admin y reglas de acceso del portal cliente.
+</Card>
+
+<Card
   title="Modulos"
   icon="boxes-stacked"
   href="/modules-overview"
   horizontal
 >
   Entiende que hace cada modulo principal antes de entrar al detalle de endpoints.
+</Card>
+
+<Card
+  title="Cobertura"
+  icon="list-check"
+  href="/documentation-coverage"
+  horizontal
+>
+  Revisa que cubre hoy Mintlify y en que areas conviene ir mas a fondo.
 </Card>
 
 ## Endpoints clave
@@ -143,6 +161,20 @@ servido por el backend productivo.
     Planes, altas, transferencias, estados y reversiones.
   </Card>
   <Card
+    title="Plataforma"
+    icon="toolbox"
+    href="/platform-guide"
+  >
+    Portal cliente, templates, RRHH, notificaciones y herramientas internas.
+  </Card>
+  <Card
+    title="Cobertura Mintlify"
+    icon="list-check"
+    href="/documentation-coverage"
+  >
+    Mapa rapido de cobertura OpenAPI y guias editoriales publicadas.
+  </Card>
+  <Card
     title="Swagger reemplazado"
     icon="arrows-rotate"
   >
@@ -155,4 +187,6 @@ servido por el backend productivo.
 - La referencia de endpoints se genera desde OpenAPI, no desde paginas MDX manuales.
 - Si el backend agrega o cambia endpoints, la documentacion se actualiza desde
   `https://api.raul.ugps.io/api/openapi.json`.
+- Si buscas un endpoint puntual, entra primero a la pestaña **API**.
+- Si buscas contexto de negocio o flujos, entra primero a las paginas de **Guia**.
 - `api.ugps.io` queda fuera de esta documentacion.

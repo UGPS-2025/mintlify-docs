@@ -1,6 +1,6 @@
 ---
 title: "Flujos comunes"
-description: "Recorridos recomendados para consumir Raul API en integraciones y backoffice"
+description: "Recorridos recomendados para consumir Raul API en integraciones, billing, portal y backoffice"
 ---
 
 ## Antes de empezar
@@ -59,7 +59,7 @@ Usa este flujo cuando el cliente ya existe y necesitas registrar interlocutores.
 - Usa `GET /api/v1/contact/by-client/{clientId}` para vistas por cliente.
 - Usa `GET /api/v1/contact/all/paginated` cuando el volumen sea alto.
 
-## Flujo 4: registrar un equipo GPS
+## Flujo 4: registrar un equipo GPS y asociarlo a suscripcion
 
 Este flujo cubre el alta y consulta operativa de un GPS.
 
@@ -67,28 +67,74 @@ Este flujo cubre el alta y consulta operativa de un GPS.
 2. Crea el equipo con `POST /api/v1/gps_details/create`.
 3. Consulta el detalle por `GET /api/v1/gps_details/{gps_details_id}`.
 4. Usa `GET /api/v1/gps_details/related-data/{gps_details_id}` para contexto ampliado.
-5. Si necesitas reportes o tableros, usa `GET /api/v1/gps_details/summary` y `GET /api/v1/gps_details/count`.
+5. Consulta planes con `GET /api/v1/subscription_plan/all`.
+6. Crea la suscripcion con `POST /api/v1/subscription_details/create`.
+7. Revisa estado y resumen con `GET /api/v1/subscription_details/get/{subscription_detail_id}` y `GET /api/v1/subscription_details/summary`.
 
 ### Recomendaciones
 
 - Para lotes grandes, prefiere `GET /api/v1/gps_details/all/cursor`.
-- Considera `/api/v1/gps/...` y `/api/v1/gps_details/...` como alias funcionales cuando existan ambos.
+- Usa `POST /api/v1/subscription_details/transfer` solo cuando realmente cambie titularidad.
 
-## Flujo 5: crear y mover suscripciones
+## Flujo 5: ejecutar una visita tecnica con evidencia
 
-Este flujo aplica cuando el GPS o servicio ya requiere plan comercial asociado.
+Este flujo aplica cuando ya existe la visita o se necesita crear y documentar una visita tecnica.
 
-1. Consulta planes con `GET /api/v1/subscription_plan/all`.
-2. Crea la suscripcion con `POST /api/v1/subscription_details/create`.
-3. Revisa estado y resumen con `GET /api/v1/subscription_details/get/{subscription_detail_id}` y `GET /api/v1/subscription_details/summary`.
-4. Si corresponde, asigna a cliente hijo con `POST /api/v1/subscription_details/assign-to-child`.
-5. Si hay cambio de titularidad, usa `POST /api/v1/subscription_details/transfer`.
-6. Si una cancelacion fue incorrecta, evalua `POST /api/v1/subscription_details/{id}/revert-cancellation`.
+1. Crea la visita con `POST /api/v1/visit_detail`.
+2. Consulta la agenda o resumen con `GET /api/v1/visit_detail/paginated` o `GET /api/v1/visit_detail/summary`.
+3. Si necesitas evidencia, sube archivos con `POST /api/v1/visit_detail/upload/{visitDetailId}`.
+4. Recupera imagenes con `GET /api/v1/visit_detail/images/{visitDetailId}`.
+5. Si necesitas respaldo formal, descarga `GET /api/v1/visit_detail/{id}/pdf`.
 
 ### Recomendaciones
 
-- Usa `GET /api/v1/subscription_details/client/{client_id}` para vistas centradas en cliente.
-- Para data masiva, prefiere endpoints paginados o cursor.
+- Antes de reintentar un upload, verifica si la imagen ya quedo registrada.
+- Para vistas por tecnico, usa `GET /api/v1/visit_detail/by-technicians`.
+
+## Flujo 6: ciclo de invoice moderna y DTE
+
+Este es uno de los flujos mas sensibles del sistema y varias mutaciones requieren perfil admin explicito.
+
+1. Lista o crea invoices con `GET|POST /api/v1/billing/invoices`.
+2. Publica la invoice con `POST /api/v1/billing/invoices/{id}/publish`.
+3. Emite DTE con `POST /api/v1/billing/invoices/{id}/emit-dte`.
+4. Si corresponde, sincroniza respuesta con `POST /api/v1/billing/invoices/{id}/sync-dte` o `POST /api/v1/billing/invoices/{id}/sii-response`.
+5. Previsualiza correo con `POST /api/v1/billing/invoices/{id}/email-preview`.
+6. Envia correo con `POST /api/v1/billing/invoices/{id}/send-email`.
+7. Registra pago con `POST /api/v1/billing/invoices/{id}/register-payment`.
+
+### Recomendaciones
+
+- Verifica estado actual de la invoice antes de repetir mutaciones.
+- Usa `POST /api/v1/billing/invoices/batch/generate-monthly` solo para procesos batch.
+- Considera este flujo como `admin-only` en la practica.
+
+## Flujo 7: acceso y autoservicio del portal cliente
+
+1. Solicita magic link con `POST /api/portal/auth/request`.
+2. Intercambia el token con `POST /api/portal/auth/exchange`.
+3. Lista documentos con `GET /api/portal/invoices`.
+4. Descarga detalle o respaldos con `GET /api/portal/invoices/{id}`, `/pdf`, `/xml` o `/detail-xlsx`.
+5. Si el cliente pagara o notificara transferencia, usa `POST /api/portal/invoices/pay`, `POST /api/portal/invoices/{id}/pay` o `POST /api/portal/invoices/{id}/notify-transfer`.
+6. Si el flujo es de soporte, usa `GET /api/portal/support/tickets` y `POST /api/portal/support/tickets/{ticketId}/comments`.
+
+### Recomendaciones
+
+- En portal, el acceso depende de roles funcionales del contacto.
+- `invoices` y `support` no comparten exactamente la misma matriz de acceso.
+
+## Flujo 8: inbox omnichannel con shared mailbox
+
+1. Consulta inbox y threads con `GET /api/omnichannel/inbox` y `GET /api/omnichannel/threads/{threadId}`.
+2. Si trabajas con bandejas compartidas, lista `GET /api/shared-mailboxes` y las del usuario con `GET /api/shared-mailboxes/my-mailboxes`.
+3. Si eres admin, registra o sincroniza mailboxes con `POST /api/shared-mailboxes`, `POST /api/shared-mailboxes/bootstrap` y `POST /api/shared-mailboxes/{id}/sync`.
+4. Responde por email/WhatsApp con `POST /api/omnichannel/threads/{threadId}/reply`, `POST /api/omnichannel/send-shared` o `POST /api/omnichannel/send-whatsapp`.
+5. Ordena la operacion con assignment, tags y estado de lectura.
+
+### Recomendaciones
+
+- Evita retries ciegos sobre envio real de mensajes.
+- Reconsulta thread y ownership antes de reenviar o reasignar.
 
 ## Manejo de rutas legacy
 
@@ -100,6 +146,8 @@ Si encuentras dos endpoints con el mismo objetivo:
 
 ## Enlaces relacionados
 
+- [Autenticacion](/authentication)
+- [Permisos y roles](/authorization-and-roles)
 - [Introduccion API](/api-reference/introduction)
 - [Guia para IA](/ai-consumption)
 - [OpenAPI JSON](https://api.raul.ugps.io/api/openapi.json)

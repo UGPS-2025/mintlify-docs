@@ -1,6 +1,929 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/v1/sellers/all": {
+      "get": {
+        "description": "Operacion: Obtener todos los vendedores.",
+        "operationId": "SellersController_getAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de vendedores obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SellerListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener todos los vendedores",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/api/v1/sellers/get/{id}": {
+      "get": {
+        "description": "Operacion: Obtener vendedor por ID.",
+        "operationId": "SellersController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del vendedor (UUID)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vendedor obtenido exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SellerResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vendedor no encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener vendedor por ID",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/api/v1/sellers/create": {
+      "post": {
+        "description": "Operacion: Crear nuevo vendedor.",
+        "operationId": "SellersController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSellerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Vendedor creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SellerResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Vendedor con RUT ya existe"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Crear nuevo vendedor",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/api/v1/sellers/update/{id}": {
+      "put": {
+        "description": "Operacion: Actualizar vendedor.",
+        "operationId": "SellersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del vendedor (UUID)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSellerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vendedor actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SellerResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vendedor no encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Actualizar vendedor",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/api/v1/sellers/delete/{id}": {
+      "delete": {
+        "description": "Operacion: Eliminar vendedor.",
+        "operationId": "SellersController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del vendedor (UUID)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vendedor eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SellerMessageResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vendedor no encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Eliminar vendedor",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/api/v1/currency/all": {
+      "get": {
+        "description": "Operacion: Obtener todas las monedas.",
+        "operationId": "CurrencyController_getAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de monedas obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrencyResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener todas las monedas",
+        "tags": [
+          "Currency"
+        ]
+      }
+    },
+    "/api/v1/currency/get/{id}": {
+      "get": {
+        "description": "Operacion: Obtener una moneda por ID.",
+        "operationId": "CurrencyController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID de la moneda",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moneda obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencyResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Moneda no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener una moneda por ID",
+        "tags": [
+          "Currency"
+        ]
+      }
+    },
+    "/api/v1/currency/create": {
+      "post": {
+        "description": "Operacion: Crear una nueva moneda.",
+        "operationId": "CurrencyController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCurrencyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Moneda creada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencyResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Crear una nueva moneda",
+        "tags": [
+          "Currency"
+        ]
+      }
+    },
+    "/api/v1/currency/update": {
+      "post": {
+        "description": "Operacion: Actualizar una moneda.",
+        "operationId": "CurrencyController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCurrencyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Moneda actualizada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencyResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Moneda no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Actualizar una moneda",
+        "tags": [
+          "Currency"
+        ]
+      }
+    },
+    "/api/v1/currency/delete/{id}": {
+      "delete": {
+        "description": "Operacion: Eliminar una moneda.",
+        "operationId": "CurrencyController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID de la moneda",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Moneda eliminada exitosamente"
+          },
+          "404": {
+            "description": "Moneda no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Eliminar una moneda",
+        "tags": [
+          "Currency"
+        ]
+      }
+    },
+    "/api/v1/warehouse/all": {
+      "get": {
+        "description": "Operacion: Obtener todas las bodegas.",
+        "operationId": "SimsController_getAllWarehouses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener todas las bodegas",
+        "tags": [
+          "SIMs"
+        ]
+      }
+    },
+    "/api/v1/accessory/all": {
+      "get": {
+        "description": "Operacion: Obtener todos los accesorios.",
+        "operationId": "AccessoryController_getAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de accesorios obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoryListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener todos los accesorios",
+        "tags": [
+          "Accessories"
+        ]
+      }
+    },
+    "/api/v1/accessory/compatible/{gpsId}": {
+      "get": {
+        "description": "Operacion: Obtener accesorios compatibles con un GPS.",
+        "operationId": "AccessoryController_getCompatible",
+        "parameters": [
+          {
+            "name": "gpsId",
+            "required": true,
+            "in": "path",
+            "description": "ID del modelo GPS",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de accesorios compatibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoryListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener accesorios compatibles con un GPS",
+        "tags": [
+          "Accessories"
+        ]
+      }
+    },
+    "/api/v1/accessory/get/{id}": {
+      "get": {
+        "description": "Operacion: Obtener accesorio por ID.",
+        "operationId": "AccessoryController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del accesorio",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accesorio obtenido exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoryResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Accesorio no encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener accesorio por ID",
+        "tags": [
+          "Accessories"
+        ]
+      }
+    },
+    "/api/v1/accessory/create": {
+      "post": {
+        "description": "Operacion: Crear nuevo accesorio.",
+        "operationId": "AccessoryController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccessoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Accesorio creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoryResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Crear nuevo accesorio",
+        "tags": [
+          "Accessories"
+        ]
+      }
+    },
+    "/api/v1/accessory/update": {
+      "post": {
+        "description": "Operacion: Actualizar accesorio.",
+        "operationId": "AccessoryController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccessoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Accesorio actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoryResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Accesorio no encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Actualizar accesorio",
+        "tags": [
+          "Accessories"
+        ]
+      }
+    },
+    "/api/v1/accessory/delete/{id}": {
+      "delete": {
+        "description": "Operacion: Eliminar accesorio.",
+        "operationId": "AccessoryController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del accesorio",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accesorio eliminado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoryMessageResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Accesorio no encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Eliminar accesorio",
+        "tags": [
+          "Accessories"
+        ]
+      }
+    },
+    "/api/v1/plans": {
+      "get": {
+        "operationId": "PlansController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "category_id",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_legacy",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Plans Controller find All"
+      },
+      "post": {
+        "operationId": "PlansController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Plans Controller create"
+      }
+    },
+    "/api/v1/plans/categories": {
+      "get": {
+        "operationId": "PlansController_getCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Plans Controller get Categories"
+      }
+    },
+    "/api/v1/plans/{id}": {
+      "get": {
+        "operationId": "PlansController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Plans Controller find One"
+      },
+      "patch": {
+        "operationId": "PlansController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Plans Controller update"
+      },
+      "delete": {
+        "operationId": "PlansController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Plans"
+        ],
+        "summary": "Plans Controller remove"
+      }
+    },
+    "/api/v1/plan-categories": {
+      "get": {
+        "operationId": "PlanCategoriesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "PlanCategories"
+        ],
+        "summary": "Plan Categories Controller find All"
+      },
+      "post": {
+        "operationId": "PlanCategoriesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlanCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "PlanCategories"
+        ],
+        "summary": "Plan Categories Controller create"
+      }
+    },
+    "/api/v1/plan-categories/{id}": {
+      "get": {
+        "operationId": "PlanCategoriesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "PlanCategories"
+        ],
+        "summary": "Plan Categories Controller find One"
+      },
+      "patch": {
+        "operationId": "PlanCategoriesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlanCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "PlanCategories"
+        ],
+        "summary": "Plan Categories Controller update"
+      },
+      "delete": {
+        "operationId": "PlanCategoriesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "PlanCategories"
+        ],
+        "summary": "Plan Categories Controller remove"
+      }
+    },
     "/api/v1/quoter/devices": {
       "get": {
         "description": "Operacion: List all GPS devices with filters.",
@@ -1423,6 +2346,155 @@
         ]
       }
     },
+    "/api/product-knowledge": {
+      "get": {
+        "description": "Operacion: Listar conocimiento de producto paginado.",
+        "operationId": "ProductKnowledgeController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Listar conocimiento de producto paginado",
+        "tags": [
+          "Product Knowledge"
+        ]
+      },
+      "post": {
+        "description": "Operacion: Crear nuevo conocimiento de producto.",
+        "operationId": "ProductKnowledgeController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductKnowledgeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Crear nuevo conocimiento de producto",
+        "tags": [
+          "Product Knowledge"
+        ]
+      }
+    },
+    "/api/product-knowledge/{id}": {
+      "get": {
+        "description": "Operacion: Obtener conocimiento de producto por ID.",
+        "operationId": "ProductKnowledgeController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del ProductKnowledge",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener conocimiento de producto por ID",
+        "tags": [
+          "Product Knowledge"
+        ]
+      },
+      "put": {
+        "description": "Operacion: Actualizar conocimiento de producto.",
+        "operationId": "ProductKnowledgeController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del ProductKnowledge",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductKnowledgeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Actualizar conocimiento de producto",
+        "tags": [
+          "Product Knowledge"
+        ]
+      },
+      "delete": {
+        "description": "Operacion: Eliminar (soft delete) conocimiento de producto.",
+        "operationId": "ProductKnowledgeController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID del ProductKnowledge",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Eliminar (soft delete) conocimiento de producto",
+        "tags": [
+          "Product Knowledge"
+        ]
+      }
+    },
     "/api/quotes/ai/generate": {
       "post": {
         "description": "Genera contenido personalizado usando GPT-4 basado en contexto de LinkedIn y cotizaciones exitosas previas (RAG).",
@@ -2046,6 +3118,226 @@
         "summary": "Eliminar venta de equipo (soft delete)",
         "tags": [
           "Equipment Sales"
+        ]
+      }
+    },
+    "/api/v1/shipment-orders": {
+      "post": {
+        "description": "Operacion: Crear orden de despacho.",
+        "operationId": "ShipmentOrderController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShipmentOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Orden de despacho creada"
+          },
+          "400": {
+            "description": "Validación fallida"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Crear orden de despacho",
+        "tags": [
+          "Shipment Orders"
+        ]
+      },
+      "get": {
+        "description": "Operacion: Listar órdenes de despacho paginadas.",
+        "operationId": "ShipmentOrderController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de órdenes"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Listar órdenes de despacho paginadas",
+        "tags": [
+          "Shipment Orders"
+        ]
+      }
+    },
+    "/api/v1/shipment-orders/stats": {
+      "get": {
+        "description": "KPIs: pendientes, en tránsito, entregados esta semana, promedio de entrega.",
+        "operationId": "ShipmentOrderController_stats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estadísticas de despachos"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener estadísticas de despachos",
+        "tags": [
+          "Shipment Orders"
+        ]
+      }
+    },
+    "/api/v1/shipment-orders/by-ticket/{ticketId}": {
+      "get": {
+        "description": "Operacion: Obtener órdenes de despacho por ticket ID.",
+        "operationId": "ShipmentOrderController_findByTicket",
+        "parameters": [
+          {
+            "name": "ticketId",
+            "required": true,
+            "in": "path",
+            "description": "UUID del ticket",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de órdenes de despacho del ticket"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener órdenes de despacho por ticket ID",
+        "tags": [
+          "Shipment Orders"
+        ]
+      }
+    },
+    "/api/v1/shipment-orders/{id}": {
+      "get": {
+        "description": "Operacion: Obtener orden de despacho por ID.",
+        "operationId": "ShipmentOrderController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la orden de despacho",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orden de despacho encontrada"
+          },
+          "404": {
+            "description": "Orden no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Obtener orden de despacho por ID",
+        "tags": [
+          "Shipment Orders"
+        ]
+      }
+    },
+    "/api/v1/shipment-orders/{id}/status": {
+      "patch": {
+        "description": "Operacion: Actualizar estado de orden de despacho.",
+        "operationId": "ShipmentOrderController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la orden de despacho",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateShipmentOrderStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estado actualizado"
+          },
+          "404": {
+            "description": "Orden no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Actualizar estado de orden de despacho",
+        "tags": [
+          "Shipment Orders"
+        ]
+      }
+    },
+    "/api/v1/shipment-orders/{id}/cancel": {
+      "patch": {
+        "description": "Operacion: Cancelar orden de despacho.",
+        "operationId": "ShipmentOrderController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID de la orden de despacho",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orden cancelada"
+          },
+          "400": {
+            "description": "No se puede cancelar"
+          },
+          "404": {
+            "description": "Orden no encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Cancelar orden de despacho",
+        "tags": [
+          "Shipment Orders"
         ]
       }
     },

@@ -24,6 +24,24 @@ description: "Schemas clave de Raul API por dominio funcional"
   <Card title="InvoiceResponseDto" icon="receipt" href="/models/invoice">
     Facturas, resumenes y trazabilidad financiera.
   </Card>
+  <Card title="InvoiceWithDetailsResponseDto" icon="file-invoice" href="/models/invoice-detail">
+    Invoice moderna con lineas, estados y referencias.
+  </Card>
+  <Card title="CreateVisitDetailDto" icon="map-location-dot" href="/models/visit-detail">
+    Payload operativo para visitas tecnicas.
+  </Card>
+  <Card title="CreateTemplateDto" icon="layer-group" href="/models/template">
+    Alta y gestion de templates reutilizables.
+  </Card>
+  <Card title="CreateEmployeeDto" icon="users" href="/models/employee">
+    Alta de colaboradores y RRHH.
+  </Card>
+  <Card title="TaskResponseDto" icon="list-check" href="/models/task">
+    Tareas internas y estados operativos.
+  </Card>
+  <Card title="ExchangePortalTokenDto" icon="key" href="/models/portal-access">
+    Acceso al portal cliente via magic link.
+  </Card>
 </CardGroup>
 
 ## Como usar esta seccion
@@ -31,3 +49,4 @@ description: "Schemas clave de Raul API por dominio funcional"
 - Usa estas paginas para entender el shape de los DTOs importantes.
 - Si necesitas el endpoint que usa el schema, navega luego al spec correspondiente.
 - Si un dominio mezcla varios DTOs, parte por la guia funcional del modulo.
+- Hay modelos de request y de response: revisa el titulo de cada pagina antes de reutilizarlo.
